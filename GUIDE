@@ -1,0 +1,93 @@
+# 🚀 MIT Skill Builder — How to Run & Share
+
+## 📁 Project Files
+
+Your app is in `c:\Users\gugan\Downloads\skill builder\` and consists of just **4 files**:
+
+| File | Purpose |
+|------|---------|
+| `mit_skill_builder_practice.html` | Main page (open this) |
+| `style.css` | Dark theme styling |
+| `questions.js` | All 24 questions, tests & solutions |
+| `app.js` | Code editor, Skulpt runner, UI logic |
+
+---
+
+## 🖥️ How to Run Locally
+
+### Option 1: Python Server (Recommended)
+```
+cd "c:\Users\gugan\Downloads\skill builder"
+python -m http.server 8080
+```
+Then open **http://localhost:8080/mit_skill_builder_practice.html** in your browser.
+
+### Option 2: VS Code Live Server
+1. Install the "Live Server" extension in VS Code
+2. Right-click `mit_skill_builder_practice.html` → **Open with Live Server**
+3. It auto-opens in your browser
+
+### Option 3: Direct File Open
+> [!WARNING]
+> This won't work because Skulpt loads from CDN and browsers block scripts on `file://` URLs.
+
+---
+
+## 🌐 How to Share With Friends
+
+### ✅ Option 1: GitHub Pages (FREE — Best Option)
+
+1. **Create a GitHub repo:**
+   ```
+   cd "c:\Users\gugan\Downloads\skill builder"
+   git init
+   git add .
+   git commit -m "MIT Skill Builder"
+   git branch -M main
+   git remote add origin https://github.com/YOUR_USERNAME/skill-builder.git
+   git push -u origin main
+   ```
+
+2. **Enable GitHub Pages:**
+   - Go to repo → **Settings** → **Pages**
+   - Source: **Deploy from a branch**
+   - Branch: `main` → `/ (root)`
+   - Click **Save**
+
+3. **Share the link:**
+   ```
+   https://YOUR_USERNAME.github.io/skill-builder/mit_skill_builder_practice.html
+   ```
+   Your friends just open this URL in any browser — no installation needed!
+
+### ✅ Option 2: Netlify (FREE — Easiest)
+
+1. Go to [netlify.com](https://netlify.com) and sign up
+2. Drag and drop your `skill builder` folder onto the Netlify dashboard
+3. You get a link like `https://cool-name-123.netlify.app`
+4. Share that link — done!
+
+### ✅ Option 3: Share as ZIP
+
+1. Zip the `skill builder` folder
+2. Send to friends via WhatsApp/Telegram/email
+3. They extract and run `python -m http.server 8080`
+4. Open `http://localhost:8080/mit_skill_builder_practice.html`
+
+---
+
+## 📱 Features Your Friends Get
+
+| Feature | Description |
+|---------|-------------|
+| ⚡ Real Python Execution | Code actually runs via Skulpt (Python in browser) |
+| 📝 24 Questions | Across 5 weeks of MIT Skill Builder |
+| 🎯 Auto Test Cases | Click Run Tests to validate code |
+| 🐛 Error Details | Shows exact line, character, and fix hints |
+| 💡 Hints & Solutions | Built-in help for every question |
+| 💾 Auto-Save | Code persists in browser localStorage |
+| 📊 Progress Tracking | Tracks solved questions |
+| 🔀 Resizable Panels | Drag divider between question & IDE |
+
+> [!TIP]
+> **GitHub Pages is the best option** — it's free, permanent, and your friends just need a browser link. No installation required!

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MIT Skill Builder - Interactive Python practice for exam preparation. 24 questions across 5 weeks.">
+  <title>MIT Skill Builder — Exam Practice</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <!-- LEFT: Question Panel -->
+    <div class="left-panel">
+      <div class="sidebar-top">
+        <h1>⚡ MIT Skill Builder</h1>
+        <div class="progress-info">
+          <p id="progress-text">0/24 solved</p>
+          <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+        </div>
+      </div>
+      <div class="q-selector" id="week-tabs"></div>
+      <div class="q-tabs" id="q-tabs"></div>
+      <div class="q-content" id="q-content">
+        <div class="q-title" id="q-title">Select a question</div>
+        <div class="q-desc" id="q-desc">Pick a question from the tabs above to begin practicing.</div>
+      </div>
+      <div class="q-nav">
+        <button class="btn" onclick="navQuestion(-1)">← Prev</button>
+        <button class="btn" onclick="navQuestion(1)">Next →</button>
+      </div>
+    </div>
+
+    <!-- Resizable Divider -->
+    <div class="divider" id="divider"></div>
+
+    <!-- RIGHT: IDE Panel -->
+    <div class="right-panel">
+      <div class="ide-header">
+        <div class="ide-header-left">
+          <span>📝 Python Code</span>
+          <span style="font-size:10px;color:var(--text3)">Tab = 4 spaces · Auto-saved</span>
+        </div>
+        <div class="ide-actions">
+          <button class="btn btn-sm" onclick="toggleHint()">💡 Hint</button>
+          <button class="btn btn-sm" onclick="toggleSolution()">👁 Answer</button>
+          <button class="btn btn-sm" onclick="loadSolution()">📋 Load</button>
+          <button class="btn btn-sm" onclick="clearCode()">🗑 Clear</button>
+        </div>
+      </div>
+      <div class="hint-box" id="hint-box" style="display:none"></div>
+      <div class="solution-box" id="solution-box" style="display:none"></div>
+      <textarea class="code-area" id="code-area" spellcheck="false" placeholder="# Write your Python code here&#10;# Your code is auto-saved as you type"></textarea>
+      <div class="run-bar">
+        <button class="btn btn-primary" onclick="runTests()">▶ Run Tests</button>
+      </div>
+      <div class="results-panel" id="results-panel">
+        <div class="results-header">
+          <span>📊 Test Results</span>
+          <span id="results-count"></span>
+        </div>
+        <div class="results-body" id="output-area">
+          <div class="result-block result-neutral">Write your code and click "Run Tests" to check.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://skulpt.org/js/skulpt.min.js"></script>
+  <script src="https://skulpt.org/js/skulpt-stdlib.js"></script>
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
