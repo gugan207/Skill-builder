@@ -1,6 +1,13 @@
 let currentQ=null,currentWeek=1,solved=new Set();
-const saved=JSON.parse(localStorage.getItem('sb_solved')||'[]');
-saved.forEach(k=>solved.add(k));
+
+// Safe localStorage read — prevents app crash if data is corrupt
+try{
+  const saved=JSON.parse(localStorage.getItem('sb_solved')||'[]');
+  saved.forEach(k=>solved.add(k));
+}catch(e){
+  console.warn('Could not load saved progress, starting fresh:',e);
+  localStorage.removeItem('sb_solved');
+}
 
 function qKey(q){return`${q.week}-${q.num}`;}
 
@@ -119,11 +126,20 @@ function clearCode(){
 }
 function saveCode(){
   if(!currentQ)return;
-  localStorage.setItem('sb_code_'+qKey(currentQ),document.getElementById('code-area').value);
+  try{
+    localStorage.setItem('sb_code_'+qKey(currentQ),document.getElementById('code-area').value);
+  }catch(e){
+    // localStorage full — silently ignore
+    console.warn('Could not save code:',e);
+  }
 }
 
 // ── Detailed Error Analysis ──
 function analyzeError(got, expected, input){
+  // Null-safe: handle undefined/null output
+  got=got||'';
+  expected=expected||'';
+
   const gotLines=got.trim().split('\n');
   const expLines=expected.trim().split('\n');
   let errors=[];
@@ -178,6 +194,12 @@ function analyzeError(got, expected, input){
 // ── Run Python with Skulpt ──
 function runPython(code, inputStr){
   return new Promise((resolve,reject)=>{
+    // Check if Skulpt is loaded
+    if(typeof Sk==='undefined'){
+      reject(new Error('Skulpt library failed to load. Check your internet connection and refresh the page.'));
+      return;
+    }
+
     let output='';
     const inputLines=inputStr?inputStr.split('\n'):[];
     let inputIdx=0;
@@ -199,7 +221,8 @@ function runPython(code, inputStr){
         });
       },
       inputfunTakesPrompt:true,
-      __future__:Sk.python3
+      __future__:Sk.python3,
+      execLimit:5000
     });
 
     Sk.misceval.asyncToPromise(function(){
@@ -214,107 +237,145 @@ function runPython(code, inputStr){
 }
 
 // ── Run Tests ──
+let isRunning=false;
 async function runTests(){
-  if(!currentQ)return;
-  saveCode();
-  const out=document.getElementById('output-area');
-  out.innerHTML='<div class="result-block result-neutral">⏳ Running tests...</div>';
-  let passed=0,total=currentQ.tests.length;
-  const code=document.getElementById('code-area').value;
+  if(!currentQ||isRunning)return;
 
-  // Check if code is empty
-  if(!code.trim()){
-    out.innerHTML='<div class="result-block result-fail">⚠ No code written yet. Write your Python code and try again.</div>';
-    document.getElementById('results-count').textContent='0/'+total;
-    document.getElementById('results-count').style.color='var(--red)';
-    return;
+  const runBtn=document.querySelector('.run-bar .btn-primary');
+  const out=document.getElementById('output-area');
+
+  // Lock button to prevent double-clicks
+  isRunning=true;
+  if(runBtn){
+    runBtn.disabled=true;
+    runBtn.textContent='⏳ Running...';
   }
 
-  out.innerHTML='';
-  for(let i=0;i<currentQ.tests.length;i++){
-    const t=currentQ.tests[i];
-    let got='';
-    let isError=false;
+  try{
+    saveCode();
+    out.innerHTML='<div class="result-block result-neutral">⏳ Running tests...</div>';
+    let passed=0,total=currentQ.tests.length;
+    const code=document.getElementById('code-area').value;
 
-    try{
-      got=await runPython(code,t.input||'');
-    }catch(e){
-      got='';
-      isError=true;
-      const errMsg=e.toString();
+    // Check if code is empty
+    if(!code.trim()){
+      out.innerHTML='<div class="result-block result-fail">⚠ No code written yet. Write your Python code and try again.</div>';
+      document.getElementById('results-count').textContent='0/'+total;
+      document.getElementById('results-count').style.color='var(--red)';
+      return;
+    }
+
+    out.innerHTML='';
+    for(let i=0;i<currentQ.tests.length;i++){
+      const t=currentQ.tests[i];
+      let got='';
+      let isError=false;
+
+      try{
+        got=await runPython(code,t.input||'');
+      }catch(e){
+        got='';
+        isError=true;
+        const errMsg=e.toString();
+
+        const div=document.createElement('div');
+        div.className='result-block result-fail';
+        let text=`✗ Test ${i+1}: ERROR`;
+        if(t.input) text+=`\nInput:    ${t.input.replace(/\n/g, ' | ')}`;
+        text+=`\n\n🐛 Python Error:\n${errMsg}`;
+
+        // Parse common Python errors and give hints
+        if(errMsg.includes('TimeLimitError')||errMsg.includes('time limit')||errMsg.includes('Program exceeded')){
+          text+=`\n\n💡 Fix: Your code took too long (>5s). Check for infinite loops — make sure while/for loops have a proper exit condition.`;
+        }else if(errMsg.includes('Skulpt library failed')){
+          text+=`\n\n💡 Fix: Skulpt could not be loaded. Check your internet connection and refresh the page.`;
+        }else if(errMsg.includes('SyntaxError')){
+          text+=`\n\n💡 Fix: Check for missing quotes, parentheses, colons, or indentation errors.`;
+        }else if(errMsg.includes('NameError')){
+          const varMatch=errMsg.match(/name '(\w+)' is not defined/);
+          text+=`\n\n💡 Fix: Variable ${varMatch?`'${varMatch[1]}'`:''} is not defined. Check spelling or define it before use.`;
+        }else if(errMsg.includes('TypeError')){
+          text+=`\n\n💡 Fix: Type mismatch. Check if you're mixing strings and numbers without conversion.`;
+        }else if(errMsg.includes('IndentationError')){
+          text+=`\n\n💡 Fix: Check your indentation. Python uses spaces (4 spaces per level).`;
+        }else if(errMsg.includes('ValueError')){
+          text+=`\n\n💡 Fix: Invalid value conversion. Check int()/float() calls.`;
+        }else if(errMsg.includes('ZeroDivisionError')){
+          text+=`\n\n💡 Fix: You're dividing by zero. Add a check before dividing.`;
+        }else if(errMsg.includes('IndexError')){
+          text+=`\n\n💡 Fix: List/string index out of range. Check your loop bounds.`;
+        }else if(errMsg.includes('KeyError')){
+          text+=`\n\n💡 Fix: Dictionary key not found. Check the key exists before accessing it.`;
+        }
+        div.textContent=text;
+        out.appendChild(div);
+        continue;
+      }
+
+      const pass=got.trim()===t.expected.trim();
+      if(pass)passed++;
 
       const div=document.createElement('div');
-      div.className='result-block result-fail';
-      let text=`✗ Test ${i+1}: ERROR`;
-      if(t.input) text+=`\nInput:    ${t.input.replace(/\n/g, ' | ')}`;
-      text+=`\n\n🐛 Python Error:\n${errMsg}`;
+      div.className='result-block '+(pass?'result-pass':'result-fail');
 
-      // Parse common Python errors and give hints
-      if(errMsg.includes('SyntaxError')){
-        text+=`\n\n💡 Fix: Check for missing quotes, parentheses, colons, or indentation errors.`;
-      }else if(errMsg.includes('NameError')){
-        const varMatch=errMsg.match(/name '(\w+)' is not defined/);
-        text+=`\n\n💡 Fix: Variable ${varMatch?`'${varMatch[1]}'`:''} is not defined. Check spelling or define it before use.`;
-      }else if(errMsg.includes('TypeError')){
-        text+=`\n\n💡 Fix: Type mismatch. Check if you're mixing strings and numbers without conversion.`;
-      }else if(errMsg.includes('IndentationError')){
-        text+=`\n\n💡 Fix: Check your indentation. Python uses spaces (4 spaces per level).`;
-      }else if(errMsg.includes('ValueError')){
-        text+=`\n\n💡 Fix: Invalid value conversion. Check int()/float() calls.`;
+      if(pass){
+        div.textContent=`✓ Test ${i+1}: PASSED`;
+        if(t.input) div.textContent+=`\nInput:    ${t.input.replace(/\n/g, ' | ')}`;
+        div.textContent+=`\nOutput:   ${got}`;
+      }else{
+        let text=`✗ Test ${i+1}: FAILED`;
+        if(t.input) text+=`\nInput:    ${t.input.replace(/\n/g, ' | ')}`;
+        text+=`\nGot:      ${got}`;
+        text+=`\nExpected: ${t.expected}`;
+        div.textContent=text;
+
+        // Add detailed error analysis
+        const errors=analyzeError(got,t.expected,t.input);
+        if(errors.length){
+          const errDiv=document.createElement('div');
+          errDiv.className='error-detail';
+          errDiv.textContent=errors.join('\n\n');
+          div.appendChild(errDiv);
+        }
       }
-      div.textContent=text;
       out.appendChild(div);
-      continue;
     }
 
-    const pass=got.trim()===t.expected.trim();
-    if(pass)passed++;
-
-    const div=document.createElement('div');
-    div.className='result-block '+(pass?'result-pass':'result-fail');
-
-    if(pass){
-      div.textContent=`✓ Test ${i+1}: PASSED`;
-      if(t.input) div.textContent+=`\nInput:    ${t.input.replace(/\n/g, ' | ')}`;
-      div.textContent+=`\nOutput:   ${got}`;
+    // Summary
+    const summary=document.createElement('div');
+    summary.className='result-summary '+(passed===total?'pass':'fail');
+    if(passed===total){
+      summary.textContent=`🎉 All ${total} test(s) passed!`;
     }else{
-      let text=`✗ Test ${i+1}: FAILED`;
-      if(t.input) text+=`\nInput:    ${t.input.replace(/\n/g, ' | ')}`;
-      text+=`\nGot:      ${got}`;
-      text+=`\nExpected: ${t.expected}`;
-      div.textContent=text;
-
-      // Add detailed error analysis
-      const errors=analyzeError(got,t.expected,t.input);
-      if(errors.length){
-        const errDiv=document.createElement('div');
-        errDiv.className='error-detail';
-        errDiv.textContent=errors.join('\n\n');
-        div.appendChild(errDiv);
-      }
+      summary.textContent=`❌ ${passed}/${total} passed — check errors above for details`;
     }
-    out.appendChild(div);
-  }
+    out.appendChild(summary);
 
-  // Summary
-  const summary=document.createElement('div');
-  summary.className='result-summary '+(passed===total?'pass':'fail');
-  if(passed===total){
-    summary.textContent=`🎉 All ${total} test(s) passed!`;
-  }else{
-    summary.textContent=`❌ ${passed}/${total} passed — check errors above for details`;
-  }
-  out.appendChild(summary);
+    document.getElementById('results-count').textContent=`${passed}/${total}`;
+    document.getElementById('results-count').style.color=passed===total?'var(--green)':'var(--red)';
 
-  document.getElementById('results-count').textContent=`${passed}/${total}`;
-  document.getElementById('results-count').style.color=passed===total?'var(--green)':'var(--red)';
-
-  if(passed===total){
-    solved.add(qKey(currentQ));
-    localStorage.setItem('sb_solved',JSON.stringify([...solved]));
-    const tab=document.getElementById(`qtab-${currentQ.week}-${currentQ.num}`);
-    if(tab)tab.classList.add('solved');
-    updateProgress();
+    if(passed===total){
+      solved.add(qKey(currentQ));
+      try{
+        localStorage.setItem('sb_solved',JSON.stringify([...solved]));
+      }catch(e){
+        console.warn('Could not save progress:',e);
+      }
+      const tab=document.getElementById(`qtab-${currentQ.week}-${currentQ.num}`);
+      if(tab)tab.classList.add('solved');
+      updateProgress();
+    }
+  }catch(err){
+    // Catch-all: prevent UI from getting stuck in broken state
+    console.error('Unexpected error in runTests:',err);
+    out.innerHTML=`<div class="result-block result-fail">⚠ Unexpected error: ${err.message||err}\n\nTry refreshing the page.</div>`;
+  }finally{
+    // Always re-enable the button
+    isRunning=false;
+    if(runBtn){
+      runBtn.disabled=false;
+      runBtn.textContent='▶ Run Tests';
+    }
   }
 }
 

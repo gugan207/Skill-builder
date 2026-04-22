@@ -102,7 +102,7 @@ inputFmt:"Line 1: integer n (number of phone numbers)\nNext n lines: one phone n
 outputFmt:"\"Valid area codes: \" followed by comma-separated area codes from valid numbers.",
 hint:"Check: s[0]='(' s[4]=')' s[5]=' ', digits at [1:4], [6:9], [10:14]. Length must be 14.",
 tests:[{input:"3\n(123) 456-7890\n(abc) 111-2222\n(987) 654-3210",expected:"Valid area codes: 123,987"},{input:"3\n(000) 000-0000\n(999) 999-9999\n(123 456-7890",expected:"Valid area codes: 000,999"}],
-solution:`n=int(input())\nvalid=[]\nfor _ in range(n):\n    s=input()\n    if len(s)==14 and s[0]=='(' and s[4]==')' and s[5]==' ' and s[1:4].isdigit() and s[6:9].isdigit() and s[10:14].isdigit():\n        valid.append(s[1:4])\nprint("Valid area codes: "+",".join(valid))`},
+solution:`n=int(input())\nvalid=[]\nfor _ in range(n):\n    s=input()\n    if len(s)==14 and s[0]=='(' and s[4]==')' and s[5]==' ' and s[9]=='-' and s[1:4].isdigit() and s[6:9].isdigit() and s[10:14].isdigit():\n        valid.append(s[1:4])\nprint("Valid area codes: "+",".join(valid))`},
 
 {week:4,num:1,title:"First n primes",desc:"Tom wants to create a dictionary that lists the first n prime numbers, where each key represents the position of the prime number, and the value is the prime number itself.",
 inputFmt:"A single integer n — the number of prime numbers to generate.",
