@@ -46,7 +46,7 @@ inputFmt:"A single integer representing the customer's account number.",
 outputFmt:"An integer representing the sum of the digits of the account number.",
 hint:"Loop: extract last digit with num%10, add to sum, then num//=10.",
 tests:[{input:"123245",expected:"17"},{input:"0",expected:"0"}],
-solution:`def sum_digits(num):\n    s=0\n    while num:\n        s+=num%10\n        num//=10\n    return s\nprint(sum_digits(int(input())))`},
+solution:`def sum_digits(num):\n    sum = 0\n    while num:\n        last = num % 10\n        sum += last\n        num //= 10\n    return sum\nprint(sum_digits(int(input())))`},
 
 {week:2,num:3,title:"Net salary",desc:"Sophia manages payroll at a local business where employees are paid based on monthly hours worked. She needs to calculate the monthly salary considering a fixed hourly rate and standard deductions of 15% of the gross salary.\n\nCalculation:\n• gross = hours × rate\n• deductions = gross × 0.15\n• net = gross − deductions",
 inputFmt:"Line 1: positive float — number of hours worked\nLine 2: positive float — hourly rate",
