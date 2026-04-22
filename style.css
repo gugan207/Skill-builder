@@ -126,14 +126,14 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
    RESPONSIVE — Tablet (≤ 900px)
    ═══════════════════════════════════════════ */
 @media(max-width:900px){
-  .app{flex-direction:column;height:auto;min-height:100vh}
+  .app{flex-direction:column;height:auto;min-height:100vh;overflow-y:auto}
   .left-panel{width:100%!important;min-width:0;max-height:none;flex-shrink:0}
-  .right-panel{width:100%;min-width:0;flex:none;min-height:60vh}
+  .right-panel{width:100%;min-width:0;flex:none;min-height:60vh;overflow-y:auto}
   .divider{display:none}
   .panel-toggle{display:flex}
 
-  /* Question content should not be infinite height */
-  .q-content{max-height:35vh;overflow-y:auto}
+  /* Question content — generous height for reading */
+  .q-content{max-height:45vh;overflow-y:auto}
 
   /* Stack IDE header items better */
   .ide-header{flex-wrap:wrap;gap:6px;padding:10px 14px}

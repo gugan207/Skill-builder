@@ -88,20 +88,34 @@ function selectQ(q){
 // ── IDE Actions ──
 function toggleHint(){
   const h=document.getElementById('hint-box');
+  const s=document.getElementById('solution-box');
+  // Close answer when opening hint
+  if(h.style.display==='none') s.style.display='none';
   h.style.display=h.style.display==='none'?'block':'none';
 }
 function toggleSolution(){
   const s=document.getElementById('solution-box');
+  const h=document.getElementById('hint-box');
+  // Close hint when opening answer
+  if(s.style.display==='none') h.style.display='none';
   s.style.display=s.style.display==='none'?'block':'none';
 }
 function loadSolution(){
   if(!currentQ)return;
   document.getElementById('code-area').value=currentQ.solution;
+  // Hide hint/answer boxes after loading solution into editor
+  document.getElementById('hint-box').style.display='none';
+  document.getElementById('solution-box').style.display='none';
   saveCode();
 }
 function clearCode(){
   document.getElementById('code-area').value='';
   if(currentQ)localStorage.removeItem('sb_code_'+qKey(currentQ));
+  // Also hide hint/answer and reset test results
+  document.getElementById('hint-box').style.display='none';
+  document.getElementById('solution-box').style.display='none';
+  document.getElementById('output-area').innerHTML='<div class="result-block result-neutral">Write your code and click "Run Tests" to check.</div>';
+  document.getElementById('results-count').textContent='';
 }
 function saveCode(){
   if(!currentQ)return;
@@ -330,31 +344,37 @@ function initResizer(){
   const app=document.querySelector('.app');
   let isResizing=false;
 
-  divider.addEventListener('mousedown',e=>{
-    if(isMobile()) return; // disable on mobile
+  function startResize(e){
+    if(isMobile()||isTablet()) return;
     isResizing=true;
     divider.classList.add('active');
     document.body.classList.add('no-select');
     e.preventDefault();
-  });
-
-  document.addEventListener('mousemove',e=>{
+  }
+  function doResize(e){
     if(!isResizing)return;
+    const clientX=e.touches?e.touches[0].clientX:e.clientX;
     const appRect=app.getBoundingClientRect();
-    let newWidth=e.clientX-appRect.left;
+    let newWidth=clientX-appRect.left;
     const min=280,max=appRect.width-300;
     newWidth=Math.max(min,Math.min(max,newWidth));
     left.style.width=newWidth+'px';
     left.style.flexShrink='0';
-  });
-
-  document.addEventListener('mouseup',()=>{
+  }
+  function stopResize(){
     if(isResizing){
       isResizing=false;
       divider.classList.remove('active');
       document.body.classList.remove('no-select');
     }
-  });
+  }
+
+  divider.addEventListener('mousedown',startResize);
+  divider.addEventListener('touchstart',startResize,{passive:false});
+  document.addEventListener('mousemove',doResize);
+  document.addEventListener('touchmove',doResize,{passive:false});
+  document.addEventListener('mouseup',stopResize);
+  document.addEventListener('touchend',stopResize);
 }
 
 // ── Mobile Panel Toggle ──
