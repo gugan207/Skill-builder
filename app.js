@@ -331,6 +331,7 @@ function initResizer(){
   let isResizing=false;
 
   divider.addEventListener('mousedown',e=>{
+    if(isMobile()) return; // disable on mobile
     isResizing=true;
     divider.classList.add('active');
     document.body.classList.add('no-select');
@@ -356,6 +357,41 @@ function initResizer(){
   });
 }
 
+// ── Mobile Panel Toggle ──
+let showingIDE=false;
+function isMobile(){return window.innerWidth<=600;}
+function isTablet(){return window.innerWidth<=900;}
+
+function togglePanel(){
+  const app=document.querySelector('.app');
+  const btn=document.getElementById('panel-toggle');
+  showingIDE=!showingIDE;
+  if(showingIDE){
+    app.classList.add('show-ide');
+    btn.textContent='📖';
+    btn.title='Show Question';
+  }else{
+    app.classList.remove('show-ide');
+    btn.textContent='📝';
+    btn.title='Show Code Editor';
+  }
+}
+
+// Reset panel state on resize (e.g., rotating phone or resizing window)
+window.addEventListener('resize',()=>{
+  const app=document.querySelector('.app');
+  const left=document.querySelector('.left-panel');
+  if(!isMobile()&&!isTablet()){
+    app.classList.remove('show-ide');
+    showingIDE=false;
+    // Don't override desktop width if user was just on mobile
+  }else{
+    // Remove any inline width from resizer on mobile/tablet
+    left.style.width='';
+    left.style.flexShrink='';
+  }
+});
+
 // ── Init ──
 document.addEventListener('DOMContentLoaded',()=>{
   buildWeekTabs();
@@ -367,4 +403,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('code-area').addEventListener('keydown',e=>{
     if(e.key==='Tab'){e.preventDefault();const ta=e.target;const s=ta.selectionStart;ta.value=ta.value.substring(0,s)+'    '+ta.value.substring(ta.selectionEnd);ta.selectionStart=ta.selectionEnd=s+4;}
   });
+
+  // On mobile, if screen is small, ensure proper initial state
+  if(isMobile()||isTablet()){
+    document.querySelector('.left-panel').style.width='';
+    document.querySelector('.left-panel').style.flexShrink='';
+  }
 });
