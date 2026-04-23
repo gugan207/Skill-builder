@@ -11,6 +11,11 @@
   <div class="app">
     <!-- LEFT: Question Panel -->
     <div class="left-panel">
+      <!-- User Bar -->
+      <div class="user-bar" id="user-bar" style="display:none">
+        <span class="user-greeting" id="user-greeting">👋 Hello!</span>
+        <button class="btn btn-sm btn-logout" id="btn-logout" onclick="handleLogout()">Logout</button>
+      </div>
       <div class="sidebar-top">
         <h1>⚡ MIT Skill Builder</h1>
         <div class="progress-info">
@@ -70,7 +75,9 @@
 
   <script src="https://skulpt.org/js/skulpt.min.js"></script>
   <script src="https://skulpt.org/js/skulpt-stdlib.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="questions.js"></script>
   <script src="app.js"></script>
+  <script src="app-sync.js"></script>
 </body>
 </html>
