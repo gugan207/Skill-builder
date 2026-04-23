@@ -105,7 +105,7 @@ function selectQ(q){
   solBox.textContent=q.solution||'';
   const savedCode=localStorage.getItem(codeKey(qKey(q)));
   setCode(savedCode||'');
-  document.getElementById('output-area').innerHTML='<div class="result-block result-neutral">Write your code and press <kbd>Ctrl+Enter</kbd> or click \'Run Tests\' to check.</div>';
+  document.getElementById('output-area').innerHTML='<div class="result-block result-neutral">Write your code and press <kbd>Ctrl+Enter</kbd> or click "Run Tests" to check.</div>';
   document.getElementById('results-count').textContent='';
 }
 
