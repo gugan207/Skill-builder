@@ -248,7 +248,7 @@ let isRunning=false;
 async function runTests(){
   if(!currentQ||isRunning)return;
 
-  const runBtn=document.querySelector('.run-bar .btn-primary');
+  const runBtn=document.querySelector('.run-bar .btn-run');
   const out=document.getElementById('output-area');
 
   // Lock button to prevent double-clicks
@@ -552,6 +552,7 @@ function toggleFloatResults(){
     panel.classList.remove('floating');
     panel.style.left='';panel.style.top='';
     panel.style.transform='';panel.style.bottom='';panel.style.right='';
+    panel.style.width=''; // Clear width if resized while floating
     btn.title='Float Panel';
   }
 }
