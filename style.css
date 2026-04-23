@@ -93,7 +93,6 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .btn-primary:hover{background:var(--accent2)}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed;background:var(--bg4);border-color:var(--border)}
 .btn-theme{font-size:13px;padding:4px 8px}
-.font-size-ctrl{display:flex;gap:2px}
 kbd{display:inline-block;padding:1px 5px;font-size:10px;font-family:var(--mono);background:var(--bg3);border:1px solid var(--border);border-radius:4px;color:var(--text2)}
 
 /* Status bar */
@@ -247,7 +246,6 @@ body.light-theme .status-bar{background:#f6f8fa;color:#57606a;border-top-color:#
   .ide-actions{gap:4px}
   .btn-sm{padding:5px 8px;font-size:10px}
   .run-hint{display:none}
-  .font-size-ctrl{display:none}
 }
 
 /* ═══════════════════════════════════════════
@@ -314,7 +312,6 @@ body.light-theme .status-bar{background:#f6f8fa;color:#57606a;border-top-color:#
   .ide-actions{width:100%;justify-content:space-between}
   .ide-actions .btn-sm{flex:1;text-align:center}
   .run-hint{display:none}
-  .font-size-ctrl{display:none}
   .status-bar{font-size:9px;padding:3px 12px;gap:10px}
 
   /* CodeMirror on mobile */

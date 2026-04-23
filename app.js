@@ -483,7 +483,6 @@ window.addEventListener('resize',()=>{
 
 // ── CodeMirror IDE ──
 let cmEditor=null;
-let _fontSize=13;
 let _darkTheme=true;
 
 function initCodeMirror(){
@@ -551,14 +550,6 @@ function toggleTheme(){
   document.getElementById('theme-btn').textContent=_darkTheme?'☀️':'🌙';
 }
 
-function changeFontSize(delta){
-  _fontSize=Math.max(10,Math.min(20,_fontSize+delta));
-  if(cmEditor){
-    const wrapper=cmEditor.getWrapperElement();
-    wrapper.style.fontSize=_fontSize+'px';
-    cmEditor.refresh();
-  }
-}
 
 // ── Patch saveCode to use cmEditor ──
 function saveCode(){
