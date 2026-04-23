@@ -6,6 +6,19 @@
   <meta name="description" content="MIT Skill Builder - Interactive Python practice for exam preparation. 24 questions across 5 weeks.">
   <title>MIT Skill Builder — Exam Practice</title>
   <link rel="stylesheet" href="style.css">
+  <!-- CodeMirror 6 via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/anyword-hint.min.js"></script>
 </head>
 <body>
   <div class="app">
@@ -42,21 +55,35 @@
     <div class="right-panel">
       <div class="ide-header">
         <div class="ide-header-left">
-          <span>📝 Python Code</span>
-          <span style="font-size:10px;color:var(--text3)">Tab = 4 spaces · Auto-saved</span>
+          <span class="ide-lang-badge">🐍 Python 3.10</span>
+          <span class="ide-autosave" id="autosave-indicator">● Auto-saved</span>
         </div>
         <div class="ide-actions">
-          <button class="btn btn-sm" onclick="toggleHint()">💡 Hint</button>
-          <button class="btn btn-sm" onclick="toggleSolution()">👁 Answer</button>
-          <button class="btn btn-sm" onclick="loadSolution()">📋 Load</button>
-          <button class="btn btn-sm" onclick="clearCode()">🗑 Clear</button>
+          <button class="btn btn-sm" onclick="toggleHint()" title="Show hint">💡 Hint</button>
+          <button class="btn btn-sm" onclick="toggleSolution()" title="View answer">👁 Answer</button>
+          <button class="btn btn-sm" onclick="loadSolution()" title="Load solution into editor">📋 Load</button>
+          <button class="btn btn-sm" onclick="clearCode()" title="Clear editor">🗑 Clear</button>
+          <button class="btn btn-sm btn-theme" onclick="toggleTheme()" id="theme-btn" title="Toggle theme">☀️</button>
+          <div class="font-size-ctrl">
+            <button class="btn btn-sm" onclick="changeFontSize(-1)" title="Decrease font">A-</button>
+            <button class="btn btn-sm" onclick="changeFontSize(1)" title="Increase font">A+</button>
+          </div>
         </div>
       </div>
       <div class="hint-box" id="hint-box" style="display:none"></div>
       <div class="solution-box" id="solution-box" style="display:none"></div>
-      <textarea class="code-area" id="code-area" spellcheck="false" placeholder="# Write your Python code here&#10;# Your code is auto-saved as you type"></textarea>
+      <!-- CodeMirror Editor Container -->
+      <div class="editor-wrapper" id="editor-wrapper">
+        <textarea id="code-area" style="display:none"></textarea>
+      </div>
+      <div class="status-bar">
+        <span id="cursor-pos">Ln 1, Col 1</span>
+        <span id="char-count">0 chars</span>
+        <span class="status-shortcut">Ctrl+Enter: Run &nbsp;|&nbsp; Ctrl+/: Comment</span>
+      </div>
       <div class="run-bar">
-        <button class="btn btn-primary" onclick="runTests()">▶ Run Tests</button>
+        <button class="btn btn-primary" id="run-btn" onclick="runTests()">▶ Run Tests</button>
+        <span class="run-hint">Ctrl+Enter</span>
       </div>
       <div class="results-panel" id="results-panel">
         <div class="results-header">
@@ -64,7 +91,7 @@
           <span id="results-count"></span>
         </div>
         <div class="results-body" id="output-area">
-          <div class="result-block result-neutral">Write your code and click "Run Tests" to check.</div>
+          <div class="result-block result-neutral">Write your code and press <kbd>Ctrl+Enter</kbd> or click "Run Tests" to check.</div>
         </div>
       </div>
     </div>
@@ -73,7 +100,7 @@
   <!-- Mobile Panel Toggle -->
   <button class="panel-toggle" id="panel-toggle" onclick="togglePanel()" title="Switch panel">📝</button>
 
-  <!-- Auth guard: redirect to login if not signed in -->
+  <!-- Auth guard -->
   <script>
     if (!localStorage.getItem('sb_user')) {
       window.location.replace('login.html');

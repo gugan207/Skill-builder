@@ -97,8 +97,10 @@ function selectQ(q){
   document.getElementById('solution-box').style.display='none';
   document.getElementById('solution-box').textContent=q.solution;
   const savedCode=localStorage.getItem(codeKey(qKey(q)));
-  document.getElementById('code-area').value=savedCode||'';
-  document.getElementById('output-area').innerHTML='<div class="result-block result-neutral">Write your code and click "Run Tests" to check.</div>';
+  // setCode runs after cmEditor is initialized
+  if(typeof setCode==='function')setCode(savedCode||'');
+  else document.getElementById('code-area').value=savedCode||'';
+  document.getElementById('output-area').innerHTML='<div class="result-block result-neutral">Write your code and press <kbd>Ctrl+Enter</kbd> or click "Run Tests" to check.</div>';
   document.getElementById('results-count').textContent='';
 }
 
@@ -119,30 +121,20 @@ function toggleSolution(){
 }
 function loadSolution(){
   if(!currentQ)return;
-  document.getElementById('code-area').value=currentQ.solution;
-  // Hide hint/answer boxes after loading solution into editor
+  setCode(currentQ.solution);
   document.getElementById('hint-box').style.display='none';
   document.getElementById('solution-box').style.display='none';
   saveCode();
 }
 function clearCode(){
-  document.getElementById('code-area').value='';
+  setCode('');
   if(currentQ)localStorage.removeItem(codeKey(qKey(currentQ)));
-  // Also hide hint/answer and reset test results
   document.getElementById('hint-box').style.display='none';
   document.getElementById('solution-box').style.display='none';
-  document.getElementById('output-area').innerHTML='<div class="result-block result-neutral">Write your code and click "Run Tests" to check.</div>';
+  document.getElementById('output-area').innerHTML='<div class="result-block result-neutral">Write your code and press <kbd>Ctrl+Enter</kbd> or click "Run Tests" to check.</div>';
   document.getElementById('results-count').textContent='';
 }
-function saveCode(){
-  if(!currentQ)return;
-  try{
-    localStorage.setItem(codeKey(qKey(currentQ)),document.getElementById('code-area').value);
-  }catch(e){
-    // localStorage full — silently ignore
-    console.warn('Could not save code:',e);
-  }
-}
+
 
 // ── Detailed Error Analysis ──
 function analyzeError(got, expected, input){
@@ -265,7 +257,7 @@ async function runTests(){
     saveCode();
     out.innerHTML='<div class="result-block result-neutral">⏳ Running tests...</div>';
     let passed=0,total=currentQ.tests.length;
-    const code=document.getElementById('code-area').value;
+    const code=getCode();
 
     // Check if code is empty
     if(!code.trim()){
@@ -483,19 +475,103 @@ window.addEventListener('resize',()=>{
   }
 });
 
+// ── CodeMirror IDE ──
+let cmEditor=null;
+let _fontSize=13;
+let _darkTheme=true;
+
+function initCodeMirror(){
+  const ta=document.getElementById('code-area');
+  cmEditor=CodeMirror.fromTextArea(ta,{
+    mode:'python',
+    theme:'dracula',
+    lineNumbers:true,
+    matchBrackets:true,
+    autoCloseBrackets:true,
+    styleActiveLine:true,
+    indentUnit:4,
+    tabSize:4,
+    indentWithTabs:false,
+    lineWrapping:false,
+    extraKeys:{
+      'Tab':function(cm){
+        if(cm.somethingSelected())cm.indentSelection('add');
+        else cm.replaceSelection('    ','end');
+      },
+      'Shift-Tab':function(cm){cm.indentSelection('subtract');},
+      'Ctrl-Enter':function(){runTests();},
+      'Cmd-Enter':function(){runTests();},
+      'Ctrl-/':function(cm){cm.toggleComment();},
+      'Cmd-/':function(cm){cm.toggleComment();},
+    }
+  });
+  cmEditor.on('change',()=>{
+    saveCode();
+    showAutosave();
+    updateStatusBar();
+  });
+  cmEditor.on('cursorActivity',()=>updateStatusBar());
+  // Make editor fill its wrapper
+  cmEditor.setSize('100%','100%');
+}
+
+function updateStatusBar(){
+  if(!cmEditor)return;
+  const cur=cmEditor.getCursor();
+  document.getElementById('cursor-pos').textContent=`Ln ${cur.line+1}, Col ${cur.ch+1}`;
+  const chars=cmEditor.getValue().length;
+  document.getElementById('char-count').textContent=`${chars} char${chars!==1?'s':''}`;
+}
+
+let _autosaveTimer=null;
+function showAutosave(){
+  const el=document.getElementById('autosave-indicator');
+  el.textContent='● Saving...';
+  el.style.color='var(--yellow)';
+  clearTimeout(_autosaveTimer);
+  _autosaveTimer=setTimeout(()=>{
+    el.textContent='● Auto-saved';
+    el.style.color='var(--green)';
+  },600);
+}
+
+function getCode(){return cmEditor?cmEditor.getValue():document.getElementById('code-area').value;}
+function setCode(val){if(cmEditor)cmEditor.setValue(val||'');else document.getElementById('code-area').value=val||'';}
+
+function toggleTheme(){
+  _darkTheme=!_darkTheme;
+  document.body.classList.toggle('light-theme',!_darkTheme);
+  if(cmEditor)cmEditor.setOption('theme',_darkTheme?'dracula':'eclipse');
+  document.getElementById('theme-btn').textContent=_darkTheme?'☀️':'🌙';
+}
+
+function changeFontSize(delta){
+  _fontSize=Math.max(10,Math.min(20,_fontSize+delta));
+  if(cmEditor){
+    const wrapper=cmEditor.getWrapperElement();
+    wrapper.style.fontSize=_fontSize+'px';
+    cmEditor.refresh();
+  }
+}
+
+// ── Patch saveCode to use cmEditor ──
+function saveCode(){
+  if(!currentQ)return;
+  try{
+    localStorage.setItem(codeKey(qKey(currentQ)),getCode());
+  }catch(e){
+    console.warn('Could not save code:',e);
+  }
+}
+
 // ── Init ──
 document.addEventListener('DOMContentLoaded',()=>{
+  initCodeMirror();
   buildWeekTabs();
   buildQuestionTabs(1);
   selectQ(questions[0]);
   updateProgress();
   initResizer();
-  document.getElementById('code-area').addEventListener('input',saveCode);
-  document.getElementById('code-area').addEventListener('keydown',e=>{
-    if(e.key==='Tab'){e.preventDefault();const ta=e.target;const s=ta.selectionStart;ta.value=ta.value.substring(0,s)+'    '+ta.value.substring(ta.selectionEnd);ta.selectionStart=ta.selectionEnd=s+4;}
-  });
-
-  // On mobile, if screen is small, ensure proper initial state
   if(isMobile()||isTablet()){
     document.querySelector('.left-panel').style.width='';
     document.querySelector('.left-panel').style.flexShrink='';
