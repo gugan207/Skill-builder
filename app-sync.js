@@ -14,7 +14,7 @@ function initSync() {
   // Check if user is logged in
   const userStr = localStorage.getItem('sb_user');
   if (!userStr) {
-    // Guest mode — no user bar
+    // Not logged in — no sync needed
     return;
   }
 

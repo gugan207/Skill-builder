@@ -25,7 +25,7 @@ inputFmt:"Line 1: float A (first side)\nLine 2: float B (second side)\nLine 3: f
 outputFmt:"\"The triangle is classified as X\" where X is Equilateral, Isosceles, or Scalene.",
 hint:"Check: if A==B==C → Equilateral; elif A==B or B==C or A==C → Isosceles; else Scalene",
 tests:[{input:"90.0\n90.0\n90.0",expected:"The triangle is classified as Equilateral"},{input:"4.5\n4.5\n6.8",expected:"The triangle is classified as Isosceles"},{input:"12.3\n15.7\n17.8",expected:"The triangle is classified as Scalene"}],
-solution:`A = float(input())\nB = float(input())\nC = float(input())\n\nif A==B and B==C and C==A:\n    print("The triangle is classified as Equilateral")\nelif A==B or B==C:\n    print("The triangle is classified as Isosceles")\nelse:\n    print("The triangle is classified as Scalene")`},
+solution:`A = float(input())\nB = float(input())\nC = float(input())\n\nif A==B and B==C and C==A:\n    print("The triangle is classified as Equilateral")\nelif A==B or B==C or A==C:\n    print("The triangle is classified as Isosceles")\nelse:\n    print("The triangle is classified as Scalene")`},
 
 {week:1,num:5,title:"Zodiac sign",desc:"Banu is an astrologer who wants to determine zodiac signs based on birthdates.\n\nZodiac Sign Ranges:\n• Aries: March 21 – April 19\n• Taurus: April 20 – May 20\n• Gemini: May 21 – June 20\n• Cancer: June 21 – July 22\n• Leo: July 23 – August 22\n• Other: For dates outside of the above ranges",
 inputFmt:"Line 1: integer representing the day of birth (1–31)\nLine 2: string representing the month of birth",

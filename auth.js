@@ -185,7 +185,6 @@ async function handleSignup(e) {
 }
 
 
-
 // ══════════════════════════════════════════════════════════════
 //  Database Helpers
 // ══════════════════════════════════════════════════════════════
@@ -238,9 +237,6 @@ async function syncProgressFromCloud(userId) {
 }
 
 // ══════════════════════════════════════════════════════════════
-//  Init — Check if already logged in
-// ══════════════════════════════════════════════════════════════
-// ══════════════════════════════════════════════════════════════
 //  Init — runs after DOM is ready
 // ══════════════════════════════════════════════════════════════
 function initAuth() {
@@ -267,7 +263,6 @@ function initAuth() {
   document.getElementById('signup-form').addEventListener('submit', handleSignup);
 
 
-
   // Bind password toggles
   var toggleBtns = document.querySelectorAll('.toggle-pw');
   for (var i = 0; i < toggleBtns.length; i++) {
@@ -283,5 +278,3 @@ if (document.readyState === 'loading') {
 } else {
   initAuth();
 }
-
-
