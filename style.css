@@ -159,16 +159,15 @@ body.light-theme .status-bar{background:#e4e7ef}
   .app{flex-direction:column;height:auto;min-height:100vh;overflow-y:auto}
   .left-panel{width:100%!important;min-width:0;max-height:none;flex-shrink:0}
   .right-panel{width:100%;min-width:0;flex:none;min-height:60vh;overflow-y:auto}
+  .editor-wrapper{min-height:220px}
   .divider{display:none}
   .panel-toggle{display:flex}
-
-  /* Question content — generous height for reading */
   .q-content{max-height:45vh;overflow-y:auto}
-
-  /* Stack IDE header items better */
   .ide-header{flex-wrap:wrap;gap:6px;padding:10px 14px}
   .ide-actions{gap:4px}
   .btn-sm{padding:5px 8px;font-size:10px}
+  .run-hint{display:none}
+  .font-size-ctrl{display:none}
 }
 
 /* ═══════════════════════════════════════════
@@ -231,12 +230,16 @@ body.light-theme .status-bar{background:#e4e7ef}
 
   /* IDE header stacked */
   .ide-header{padding:10px 12px}
-  .ide-header-left span:last-child{display:none}
+  .ide-header-left .ide-autosave{display:none}
   .ide-actions{width:100%;justify-content:space-between}
   .ide-actions .btn-sm{flex:1;text-align:center}
+  .run-hint{display:none}
+  .font-size-ctrl{display:none}
+  .status-bar{font-size:9px;padding:3px 12px;gap:10px}
 
-  /* Code area */
-  .code-area{font-size:12px;padding:12px 14px;min-height:180px}
+  /* CodeMirror on mobile */
+  .CodeMirror{font-size:12px!important}
+  .editor-wrapper{min-height:200px}
 
   /* Run bar */
   .run-bar{padding:8px 14px}
@@ -269,6 +272,6 @@ body.light-theme .status-bar{background:#e4e7ef}
   .q-title{font-size:15px}
   .q-desc{font-size:11px}
   .btn{font-size:12px;padding:8px 12px}
-  .code-area{font-size:11px}
+  .CodeMirror{font-size:11px!important}
   .panel-toggle{width:50px;height:50px;font-size:20px;bottom:16px;right:16px}
 }

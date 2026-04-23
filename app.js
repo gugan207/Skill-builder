@@ -1,5 +1,9 @@
 let currentQ=null,currentWeek=1,solved=new Set();
 
+// ── Editor helpers (hoisted so all functions can use them) ──
+function getCode(){return(typeof cmEditor!=='undefined'&&cmEditor)?cmEditor.getValue():(document.getElementById('code-area')||{value:''}).value;}
+function setCode(val){if(typeof cmEditor!=='undefined'&&cmEditor)cmEditor.setValue(val||'');else{const ta=document.getElementById('code-area');if(ta)ta.value=val||'';} }
+
 // Get current user ID for user-specific storage keys
 let _userId='';
 try{
@@ -92,15 +96,16 @@ function selectQ(q){
   }
   content.innerHTML=html;
 
-  document.getElementById('hint-box').style.display='none';
-  document.getElementById('hint-box').textContent=q.hint;
-  document.getElementById('solution-box').style.display='none';
-  document.getElementById('solution-box').textContent=q.solution;
+  const hintBox=document.getElementById('hint-box');
+  const solBox=document.getElementById('solution-box');
+  hintBox.style.display='none';
+  hintBox.textContent=q.hint||'';
+  solBox.style.display='none';
+  // Use textContent for solution (plain code — no HTML injection risk)
+  solBox.textContent=q.solution||'';
   const savedCode=localStorage.getItem(codeKey(qKey(q)));
-  // setCode runs after cmEditor is initialized
-  if(typeof setCode==='function')setCode(savedCode||'');
-  else document.getElementById('code-area').value=savedCode||'';
-  document.getElementById('output-area').innerHTML='<div class="result-block result-neutral">Write your code and press <kbd>Ctrl+Enter</kbd> or click "Run Tests" to check.</div>';
+  setCode(savedCode||'');
+  document.getElementById('output-area').innerHTML='<div class="result-block result-neutral">Write your code and press <kbd>Ctrl+Enter</kbd> or click \'Run Tests\' to check.</div>';
   document.getElementById('results-count').textContent='';
 }
 
@@ -264,6 +269,9 @@ async function runTests(){
       out.innerHTML='<div class="result-block result-fail">⚠ No code written yet. Write your Python code and try again.</div>';
       document.getElementById('results-count').textContent='0/'+total;
       document.getElementById('results-count').style.color='var(--red)';
+      // NOTE: use return inside finally-guarded block — must reset button
+      isRunning=false;
+      if(runBtn){runBtn.disabled=false;runBtn.textContent='▶ Run Tests';}
       return;
     }
 
@@ -271,13 +279,11 @@ async function runTests(){
     for(let i=0;i<currentQ.tests.length;i++){
       const t=currentQ.tests[i];
       let got='';
-      let isError=false;
 
       try{
         got=await runPython(code,t.input||'');
       }catch(e){
         got='';
-        isError=true;
         const errMsg=e.toString();
 
         const div=document.createElement('div');
@@ -511,8 +517,9 @@ function initCodeMirror(){
     updateStatusBar();
   });
   cmEditor.on('cursorActivity',()=>updateStatusBar());
-  // Make editor fill its wrapper
   cmEditor.setSize('100%','100%');
+  // Refresh after first render so gutters/layout are correct
+  setTimeout(()=>cmEditor.refresh(),50);
 }
 
 function updateStatusBar(){
@@ -535,8 +542,7 @@ function showAutosave(){
   },600);
 }
 
-function getCode(){return cmEditor?cmEditor.getValue():document.getElementById('code-area').value;}
-function setCode(val){if(cmEditor)cmEditor.setValue(val||'');else document.getElementById('code-area').value=val||'';}
+// getCode/setCode are hoisted at top of file — definitions here removed to avoid duplicates
 
 function toggleTheme(){
   _darkTheme=!_darkTheme;
