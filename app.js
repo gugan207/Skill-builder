@@ -526,6 +526,51 @@ function initResultsResizer(){
   document.addEventListener('touchend',stopResize);
 }
 
+// ── Collapsible Sidebar ──
+let sidebarCollapsed=false;
+function toggleSidebar(){
+  const left=document.querySelector('.left-panel');
+  const divider=document.getElementById('divider');
+  sidebarCollapsed=!sidebarCollapsed;
+  left.classList.toggle('collapsed',sidebarCollapsed);
+  if(divider)divider.style.display=sidebarCollapsed?'none':'';
+  setTimeout(()=>{if(cmEditor)cmEditor.refresh();},350);
+}
+
+// ── Floating Results Panel ──
+let isFloating=false;
+function toggleFloatResults(){
+  const panel=document.getElementById('results-panel');
+  const btn=document.getElementById('toggle-float-btn');
+  isFloating=!isFloating;
+  if(isFloating){
+    panel.classList.add('floating');
+    panel.style.left='50%';panel.style.top='50%';
+    panel.style.transform='translate(-50%,-50%)';
+    btn.title='Dock Panel';
+  }else{
+    panel.classList.remove('floating');
+    panel.style.left='';panel.style.top='';
+    panel.style.transform='';panel.style.bottom='';panel.style.right='';
+    btn.title='Float Panel';
+  }
+}
+function makeDraggable(el,header){
+  let x=0,y=0,x2=0,y2=0;
+  header.onmousedown=function(e){
+    if(!isFloating)return;
+    if(e.target.tagName==='BUTTON'||e.target.closest('button'))return;
+    e.preventDefault();x2=e.clientX;y2=e.clientY;
+    document.onmouseup=function(){document.onmouseup=null;document.onmousemove=null;};
+    document.onmousemove=function(ev){
+      ev.preventDefault();x=x2-ev.clientX;y=y2-ev.clientY;x2=ev.clientX;y2=ev.clientY;
+      el.style.transform='none';
+      el.style.top=(el.offsetTop-y)+'px';el.style.left=(el.offsetLeft-x)+'px';
+      el.style.bottom='auto';el.style.right='auto';
+    };
+  };
+}
+
 // ── CodeMirror IDE ──
 let cmEditor=null;
 let _darkTheme=true;
@@ -562,7 +607,6 @@ function initCodeMirror(){
   });
   cmEditor.on('cursorActivity',()=>updateStatusBar());
   cmEditor.setSize('100%','100%');
-  // Refresh after first render so gutters/layout are correct
   setTimeout(()=>cmEditor.refresh(),50);
 }
 
@@ -595,7 +639,6 @@ function toggleTheme(){
   document.getElementById('theme-btn').textContent=_darkTheme?'☀️':'🌙';
 }
 
-
 // ── Patch saveCode to use cmEditor ──
 function saveCode(){
   if(!currentQ)return;
@@ -615,6 +658,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   updateProgress();
   initResizer();
   initResultsResizer();
+  makeDraggable(document.getElementById('results-panel'),document.getElementById('results-header'));
   if(isMobile()||isTablet()){
     document.querySelector('.left-panel').style.width='';
     document.querySelector('.left-panel').style.flexShrink='';

@@ -22,21 +22,35 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/anyword-hint.min.js"></script>
 </head>
 <body>
+
+  <!-- ══ Top Navigation Bar ══ -->
+  <nav class="top-nav" id="top-nav">
+    <div class="nav-left">
+      <button class="nav-toggle" id="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="nav-brand">
+        <span class="nav-logo">⚡</span>
+        <span class="nav-title">MIT Skill Builder</span>
+      </div>
+    </div>
+    <div class="nav-center">
+      <div class="nav-progress">
+        <span class="nav-progress-label" id="progress-text">0/24 solved</span>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="nav-right" id="user-bar" style="display:none">
+      <span class="user-greeting" id="user-greeting">👋 Hello</span>
+      <button class="btn-logout" id="btn-logout" onclick="handleLogout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <!-- ══ Main Workspace ══ -->
   <div class="app">
-    <!-- LEFT: Question Panel -->
+
+    <!-- LEFT: Problem Panel (40%) -->
     <div class="left-panel">
-      <!-- User Bar -->
-      <div class="user-bar" id="user-bar" style="display:none">
-        <span class="user-greeting" id="user-greeting">👋 Hello</span>
-        <button class="btn btn-sm btn-logout" id="btn-logout" onclick="handleLogout()">Logout</button>
-      </div>
-      <div class="sidebar-top">
-        <h1>MIT Skill Builder</h1>
-        <div class="progress-info">
-          <p id="progress-text">0/24 solved</p>
-          <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-        </div>
-      </div>
       <div class="q-selector" id="week-tabs"></div>
       <div class="q-tabs" id="q-tabs"></div>
       <div class="q-content" id="q-content">
@@ -52,7 +66,7 @@
     <!-- Resizable Divider -->
     <div class="divider" id="divider"></div>
 
-    <!-- RIGHT: IDE Panel -->
+    <!-- RIGHT: IDE Panel (60%) -->
     <div class="right-panel">
       <div class="ide-header">
         <div class="ide-header-left">
@@ -60,10 +74,10 @@
           <span class="ide-autosave" id="autosave-indicator">● Auto-saved</span>
         </div>
         <div class="ide-actions">
-          <button class="btn btn-sm" onclick="toggleHint()" title="Show hint">💡 Hint</button>
-          <button class="btn btn-sm" onclick="toggleSolution()" title="View answer">👁 Answer</button>
-          <button class="btn btn-sm" onclick="loadSolution()" title="Load solution into editor">📋 Load</button>
-          <button class="btn btn-sm" onclick="clearCode()" title="Clear editor">🗑 Clear</button>
+          <button class="btn btn-sm btn-ghost" onclick="toggleHint()" title="Show hint">💡 Hint</button>
+          <button class="btn btn-sm btn-ghost" onclick="toggleSolution()" title="View answer">👁 Answer</button>
+          <button class="btn btn-sm btn-ghost" onclick="loadSolution()" title="Load solution into editor">📋 Load</button>
+          <button class="btn btn-sm btn-ghost" onclick="clearCode()" title="Clear editor">🗑 Clear</button>
           <button class="btn btn-sm btn-theme" onclick="toggleTheme()" id="theme-btn" title="Toggle theme">☀️</button>
         </div>
       </div>
@@ -79,14 +93,19 @@
         <span class="status-shortcut">Ctrl+Enter: Run &nbsp;|&nbsp; Ctrl+/: Comment</span>
       </div>
       <div class="run-bar">
-        <button class="btn btn-primary" id="run-btn" onclick="runTests()">▶ Run Tests</button>
+        <button class="btn btn-run" id="run-btn" onclick="runTests()">▶ Run Tests</button>
         <span class="run-hint">Ctrl+Enter</span>
       </div>
       <div class="results-resizer" id="results-resizer"></div>
       <div class="results-panel" id="results-panel">
         <div class="results-header" id="results-header">
           <span>📊 Test Results</span>
-          <span id="results-count"></span>
+          <div class="results-actions">
+            <span id="results-count"></span>
+            <button class="btn-icon" id="toggle-float-btn" onclick="toggleFloatResults()" title="Float/Dock Panel">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="3"/><path d="M9 2v20"/></svg>
+            </button>
+          </div>
         </div>
         <div class="results-body" id="output-area">
           <div class="result-block result-neutral">Write your code and press <kbd>Ctrl+Enter</kbd> or click "Run Tests" to check.</div>
