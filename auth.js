@@ -184,10 +184,7 @@ async function handleSignup(e) {
   }
 }
 
-function continueAsGuest() {
-  localStorage.removeItem('sb_user');
-  window.location.href = 'mit_skill_builder_practice.html';
-}
+
 
 // ══════════════════════════════════════════════════════════════
 //  Database Helpers
@@ -258,7 +255,7 @@ function initAuth() {
 
   // Check Supabase config
   if (SUPABASE_URL.includes('YOUR_PROJECT_ID')) {
-    showMessage('⚠️ Supabase not configured yet. See auth.js to add your API keys. You can still use Guest mode.', 'info');
+    showMessage('⚠️ Supabase not configured yet. See auth.js to add your API keys.', 'info');
   }
 
   // Bind tab switching
@@ -269,8 +266,7 @@ function initAuth() {
   document.getElementById('login-form').addEventListener('submit', handleLogin);
   document.getElementById('signup-form').addEventListener('submit', handleSignup);
 
-  // Bind guest button
-  document.getElementById('btn-guest').addEventListener('click', continueAsGuest);
+
 
   // Bind password toggles
   var toggleBtns = document.querySelectorAll('.toggle-pw');
