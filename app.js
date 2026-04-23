@@ -481,6 +481,67 @@ window.addEventListener('resize',()=>{
   }
 });
 
+// ── Floating Results Panel ──
+let isFloating = false;
+function toggleFloatResults() {
+  const panel = document.getElementById('results-panel');
+  const handle = document.getElementById('drag-handle');
+  const btn = document.getElementById('toggle-float-btn');
+  isFloating = !isFloating;
+  if(isFloating) {
+    panel.classList.add('floating');
+    panel.style.left = '50%';
+    panel.style.top = '50%';
+    panel.style.transform = 'translate(-50%, -50%)';
+    handle.style.display = 'inline-block';
+    btn.textContent = '✖';
+    btn.title = 'Dock Panel';
+  } else {
+    panel.classList.remove('floating');
+    panel.style.left = '';
+    panel.style.top = '';
+    panel.style.transform = '';
+    handle.style.display = 'none';
+    btn.textContent = '🗗';
+    btn.title = 'Float Panel';
+  }
+}
+
+function makeDraggable(elmnt, header) {
+  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  header.onmousedown = dragMouseDown;
+
+  function dragMouseDown(e) {
+    if(!isFloating) return;
+    e = e || window.event;
+    if(e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+    e.preventDefault();
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    elmnt.style.transform = 'none'; // remove center transform
+    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    elmnt.style.bottom = 'auto';
+    elmnt.style.right = 'auto';
+  }
+
+  function closeDragElement() {
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+
 // ── CodeMirror IDE ──
 let cmEditor=null;
 let _darkTheme=true;
@@ -569,6 +630,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   selectQ(questions[0]);
   updateProgress();
   initResizer();
+  makeDraggable(document.getElementById('results-panel'), document.getElementById('results-header'));
   if(isMobile()||isTablet()){
     document.querySelector('.left-panel').style.width='';
     document.querySelector('.left-panel').style.flexShrink='';

@@ -83,9 +83,15 @@
         <span class="run-hint">Ctrl+Enter</span>
       </div>
       <div class="results-panel" id="results-panel">
-        <div class="results-header">
-          <span>📊 Test Results</span>
-          <span id="results-count"></span>
+        <div class="results-header" id="results-header">
+          <div style="display:flex; align-items:center; gap: 8px; cursor: inherit;">
+             <span class="drag-handle" id="drag-handle" style="cursor:grab; opacity:0.5; display:none;">⠿</span>
+             <span>📊 Test Results</span>
+          </div>
+          <div style="display:flex; gap: 12px; align-items:center;">
+             <span id="results-count"></span>
+             <button class="btn btn-sm btn-icon" id="toggle-float-btn" onclick="toggleFloatResults()" title="Float/Dock Panel">🗗</button>
+          </div>
         </div>
         <div class="results-body" id="output-area">
           <div class="result-block result-neutral">Write your code and press <kbd>Ctrl+Enter</kbd> or click "Run Tests" to check.</div>
