@@ -134,7 +134,7 @@ kbd{display:inline-block;padding:1px 5px;font-size:10px;font-family:var(--mono);
 /* Operators: ==, !=, <=, >=, +, -, *, /, //, **, %, =, etc. */
 .cm-operator{color:#ff7b72!important;font-weight:500!important}
 /* Variables / identifiers */
-.cm-variable{color:#e6edf3!important}
+.cm-variable, .cm-variable-2, .cm-variable-3, .cm-property{color:#e6edf3!important}
 /* Function names */
 .cm-def{color:#d2a8ff!important;font-weight:600!important}
 /* Decorators (@something) */
@@ -172,6 +172,8 @@ body.light-theme .cm-number{color:#0550ae!important}
 body.light-theme .cm-operator{color:#cf222e!important}
 body.light-theme .cm-def{color:#8250df!important}
 body.light-theme .cm-atom{color:#0550ae!important}
+body.light-theme .cm-variable, body.light-theme .cm-variable-2, body.light-theme .cm-variable-3, body.light-theme .cm-property{color:#24292f!important}
+body.light-theme .cm-meta{color:#8250df!important}
 body.light-theme .status-bar{background:#f6f8fa;color:#57606a;border-top-color:#d0d7de}
 
 /* Run bar */
