@@ -481,65 +481,49 @@ window.addEventListener('resize',()=>{
   }
 });
 
-// ── Floating Results Panel ──
-let isFloating = false;
-function toggleFloatResults() {
-  const panel = document.getElementById('results-panel');
-  const handle = document.getElementById('drag-handle');
-  const btn = document.getElementById('toggle-float-btn');
-  isFloating = !isFloating;
-  if(isFloating) {
-    panel.classList.add('floating');
-    panel.style.left = '50%';
-    panel.style.top = '50%';
-    panel.style.transform = 'translate(-50%, -50%)';
-    handle.style.display = 'inline-block';
-    btn.textContent = '✖';
-    btn.title = 'Dock Panel';
-  } else {
-    panel.classList.remove('floating');
-    panel.style.left = '';
-    panel.style.top = '';
-    panel.style.transform = '';
-    handle.style.display = 'none';
-    btn.textContent = '🗗';
-    btn.title = 'Float Panel';
-  }
-}
+// ── Vertical Results Resizer (drag up/down) ──
+function initResultsResizer(){
+  const resizer=document.getElementById('results-resizer');
+  const panel=document.getElementById('results-panel');
+  const rightPanel=document.querySelector('.right-panel');
+  if(!resizer||!panel)return;
+  let isResizing=false;
+  let startY=0;
+  let startH=0;
 
-function makeDraggable(elmnt, header) {
-  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-  header.onmousedown = dragMouseDown;
-
-  function dragMouseDown(e) {
-    if(!isFloating) return;
-    e = e || window.event;
-    if(e.target.tagName === 'BUTTON' || e.target.closest('button')) return;
+  function startResize(e){
+    if(isMobile())return;
+    isResizing=true;
+    resizer.classList.add('active');
+    document.body.classList.add('no-select');
+    startY=e.touches?e.touches[0].clientY:e.clientY;
+    startH=panel.offsetHeight;
     e.preventDefault();
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    document.onmouseup = closeDragElement;
-    document.onmousemove = elementDrag;
+  }
+  function doResize(e){
+    if(!isResizing)return;
+    const clientY=e.touches?e.touches[0].clientY:e.clientY;
+    const diff=startY-clientY; // drag up = bigger panel
+    let newH=startH+diff;
+    const minH=60;
+    const maxH=rightPanel?rightPanel.offsetHeight*0.75:500;
+    newH=Math.max(minH,Math.min(maxH,newH));
+    panel.style.height=newH+'px';
+  }
+  function stopResize(){
+    if(isResizing){
+      isResizing=false;
+      resizer.classList.remove('active');
+      document.body.classList.remove('no-select');
+    }
   }
 
-  function elementDrag(e) {
-    e = e || window.event;
-    e.preventDefault();
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    elmnt.style.transform = 'none'; // remove center transform
-    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-    elmnt.style.bottom = 'auto';
-    elmnt.style.right = 'auto';
-  }
-
-  function closeDragElement() {
-    document.onmouseup = null;
-    document.onmousemove = null;
-  }
+  resizer.addEventListener('mousedown',startResize);
+  resizer.addEventListener('touchstart',startResize,{passive:false});
+  document.addEventListener('mousemove',doResize);
+  document.addEventListener('touchmove',doResize,{passive:false});
+  document.addEventListener('mouseup',stopResize);
+  document.addEventListener('touchend',stopResize);
 }
 
 // ── CodeMirror IDE ──
@@ -630,7 +614,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   selectQ(questions[0]);
   updateProgress();
   initResizer();
-  makeDraggable(document.getElementById('results-panel'), document.getElementById('results-header'));
+  initResultsResizer();
   if(isMobile()||isTablet()){
     document.querySelector('.left-panel').style.width='';
     document.querySelector('.left-panel').style.flexShrink='';

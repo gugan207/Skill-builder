@@ -183,37 +183,12 @@ body.light-theme .status-bar{background:#f6f8fa;color:#57606a;border-top-color:#
 .run-hint{font-size:10px;color:var(--text3);font-family:var(--mono);flex-shrink:0}
 
 /* Results */
-.results-panel{flex-shrink:0;max-height:50%;overflow-y:auto;background:var(--bg2);transition:box-shadow 0.3s ease, border-radius 0.3s ease;}
-.results-panel.floating {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 450px;
-  height: 350px;
-  max-height: 80vh;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  z-index: 1000;
-  resize: both;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  background: rgba(22, 27, 34, 0.95);
-  backdrop-filter: blur(10px);
-}
-.results-panel.floating .results-header {
-  cursor: grab;
-}
-.results-panel.floating .results-header:active {
-  cursor: grabbing;
-}
-.results-panel.floating .results-body {
-  overflow-y: auto;
-  flex: 1;
-}
-.btn-icon { background: transparent; border: none; font-size: 14px; padding: 2px 6px; }
-.btn-icon:hover { background: var(--bg4); }
+/* Vertical Resizer between editor and results */
+.results-resizer{height:6px;cursor:row-resize;background:var(--border);position:relative;flex-shrink:0;transition:background .15s;z-index:10}
+.results-resizer:hover,.results-resizer.active{background:var(--accent)}
+.results-resizer::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:2px;background:var(--text3);border-radius:1px;opacity:.5}
+.results-resizer:hover::after,.results-resizer.active::after{background:#fff;opacity:.8}
+.results-panel{flex-shrink:0;overflow-y:auto;overflow-x:hidden;background:var(--bg2);height:200px;min-height:60px;max-height:80vh}
 .results-panel::-webkit-scrollbar{width:4px}
 .results-panel::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
 .results-header{padding:8px 18px;font-size:12px;font-weight:600;color:var(--text3);background:var(--bg3);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1}
