@@ -60,16 +60,20 @@ async function syncProgressToCloud() {
   if (!syncClient || !currentUser) return;
 
   try {
-    const solvedRaw = localStorage.getItem('sb_solved') || '[]';
+    // Use user-specific localStorage keys
+    const userSolvedKey = 'sb_solved_' + currentUser.id;
+    const userCodePrefix = 'sb_code_' + currentUser.id + '_';
+
+    const solvedRaw = localStorage.getItem(userSolvedKey) || '[]';
     // Parse to ensure valid JSON, then send as a proper object for JSONB column
     const solvedArray = JSON.parse(solvedRaw);
 
-    // Collect all saved code
+    // Collect all saved code for this user
     const codeSaves = {};
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
-      if (key && key.startsWith('sb_code_')) {
-        codeSaves[key.replace('sb_code_', '')] = localStorage.getItem(key);
+      if (key && key.startsWith(userCodePrefix)) {
+        codeSaves[key.replace(userCodePrefix, '')] = localStorage.getItem(key);
       }
     }
 

@@ -1,12 +1,22 @@
 let currentQ=null,currentWeek=1,solved=new Set();
 
+// Get current user ID for user-specific storage keys
+let _userId='';
+try{
+  const u=JSON.parse(localStorage.getItem('sb_user')||'{}');
+  _userId=u.id||'';
+}catch(e){}
+
+function solvedKey(){return _userId?'sb_solved_'+_userId:'sb_solved';}
+function codeKey(qk){return (_userId?'sb_code_'+_userId+'_':'sb_code_')+qk;}
+
 // Safe localStorage read — prevents app crash if data is corrupt
 try{
-  const saved=JSON.parse(localStorage.getItem('sb_solved')||'[]');
+  const saved=JSON.parse(localStorage.getItem(solvedKey())||'[]');
   saved.forEach(k=>solved.add(k));
 }catch(e){
   console.warn('Could not load saved progress, starting fresh:',e);
-  localStorage.removeItem('sb_solved');
+  localStorage.removeItem(solvedKey());
 }
 
 function qKey(q){return`${q.week}-${q.num}`;}
@@ -86,7 +96,7 @@ function selectQ(q){
   document.getElementById('hint-box').textContent=q.hint;
   document.getElementById('solution-box').style.display='none';
   document.getElementById('solution-box').textContent=q.solution;
-  const savedCode=localStorage.getItem('sb_code_'+qKey(q));
+  const savedCode=localStorage.getItem(codeKey(qKey(q)));
   document.getElementById('code-area').value=savedCode||'';
   document.getElementById('output-area').innerHTML='<div class="result-block result-neutral">Write your code and click "Run Tests" to check.</div>';
   document.getElementById('results-count').textContent='';
@@ -117,7 +127,7 @@ function loadSolution(){
 }
 function clearCode(){
   document.getElementById('code-area').value='';
-  if(currentQ)localStorage.removeItem('sb_code_'+qKey(currentQ));
+  if(currentQ)localStorage.removeItem(codeKey(qKey(currentQ)));
   // Also hide hint/answer and reset test results
   document.getElementById('hint-box').style.display='none';
   document.getElementById('solution-box').style.display='none';
@@ -127,7 +137,7 @@ function clearCode(){
 function saveCode(){
   if(!currentQ)return;
   try{
-    localStorage.setItem('sb_code_'+qKey(currentQ),document.getElementById('code-area').value);
+    localStorage.setItem(codeKey(qKey(currentQ)),document.getElementById('code-area').value);
   }catch(e){
     // localStorage full — silently ignore
     console.warn('Could not save code:',e);
@@ -357,7 +367,7 @@ async function runTests(){
     if(passed===total){
       solved.add(qKey(currentQ));
       try{
-        localStorage.setItem('sb_solved',JSON.stringify([...solved]));
+        localStorage.setItem(solvedKey(),JSON.stringify([...solved]));
       }catch(e){
         console.warn('Could not save progress:',e);
       }

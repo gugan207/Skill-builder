@@ -212,21 +212,25 @@ async function syncProgressFromCloud(userId) {
       .single();
 
     if (data) {
+      // Use user-specific localStorage keys
+      const userSolvedKey = 'sb_solved_' + userId;
+      const userCodePrefix = 'sb_code_' + userId + '_';
+
       // Merge cloud progress with local progress
       // Note: Supabase returns JSONB as objects, but may be strings if stored that way
       if (data.solved_questions) {
         const cloudSolved = typeof data.solved_questions === 'string'
           ? JSON.parse(data.solved_questions) : data.solved_questions;
-        const localSolved = JSON.parse(localStorage.getItem('sb_solved') || '[]');
+        const localSolved = JSON.parse(localStorage.getItem(userSolvedKey) || '[]');
         const merged = [...new Set([...localSolved, ...cloudSolved])];
-        localStorage.setItem('sb_solved', JSON.stringify(merged));
+        localStorage.setItem(userSolvedKey, JSON.stringify(merged));
       }
       if (data.code_saves) {
         const cloudCode = typeof data.code_saves === 'string'
           ? JSON.parse(data.code_saves) : data.code_saves;
         Object.keys(cloudCode).forEach(key => {
-          if (!localStorage.getItem('sb_code_' + key)) {
-            localStorage.setItem('sb_code_' + key, cloudCode[key]);
+          if (!localStorage.getItem(userCodePrefix + key)) {
+            localStorage.setItem(userCodePrefix + key, cloudCode[key]);
           }
         });
       }
