@@ -28,7 +28,7 @@ function initSync() {
   const userBar = document.getElementById('user-bar');
   const greeting = document.getElementById('user-greeting');
   if (userBar && greeting) {
-    greeting.textContent = '👋 Hello, ' + (currentUser.name || currentUser.email) + '!';
+    greeting.textContent = '👋 Hello, ' + (currentUser.name || currentUser.email);
     userBar.style.display = 'flex';
   }
 
