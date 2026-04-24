@@ -579,7 +579,7 @@ function makeDraggable(el,header){
 }
 
 // ── Monaco IDE ──
-let _darkTheme=true;
+let _darkTheme=localStorage.getItem('sb_theme')!=='light';
 
 function initMonaco(){
   require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' }});
@@ -652,6 +652,7 @@ function showAutosave(){
 
 function toggleTheme(){
   _darkTheme=!_darkTheme;
+  localStorage.setItem('sb_theme', _darkTheme ? 'dark' : 'light');
   document.body.classList.toggle('light-theme',!_darkTheme);
   if(typeof monaco !== 'undefined' && monacoEditor) {
     monaco.editor.setTheme(_darkTheme?'vs-dark':'vs');
@@ -671,6 +672,11 @@ function saveCode(){
 
 // ── Init ──
 document.addEventListener('DOMContentLoaded',()=>{
+  if(!_darkTheme) {
+    document.body.classList.add('light-theme');
+    const themeBtn = document.getElementById('theme-btn');
+    if(themeBtn) themeBtn.textContent='🌙';
+  }
   initMonaco();
   buildWeekTabs();
   buildQuestionTabs(1);
