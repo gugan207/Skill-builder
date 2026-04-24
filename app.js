@@ -1,8 +1,14 @@
 let currentQ=null,currentWeek=1,solved=new Set();
 
+let monacoEditor=null;
+let _pendingCode='';
+
 // ── Editor helpers (hoisted so all functions can use them) ──
-function getCode(){return(typeof cmEditor!=='undefined'&&cmEditor)?cmEditor.getValue():(document.getElementById('code-area')||{value:''}).value;}
-function setCode(val){if(typeof cmEditor!=='undefined'&&cmEditor)cmEditor.setValue(val||'');else{const ta=document.getElementById('code-area');if(ta)ta.value=val||'';} }
+function getCode(){return monacoEditor?monacoEditor.getValue():_pendingCode;}
+function setCode(val){
+  if(monacoEditor) monacoEditor.setValue(val||'');
+  else _pendingCode=val||'';
+}
 
 // Get current user ID for user-specific storage keys
 let _userId='';
@@ -534,7 +540,7 @@ function toggleSidebar(){
   sidebarCollapsed=!sidebarCollapsed;
   left.classList.toggle('collapsed',sidebarCollapsed);
   if(divider)divider.style.display=sidebarCollapsed?'none':'';
-  setTimeout(()=>{if(cmEditor)cmEditor.refresh();},350);
+  setTimeout(()=>{if(monacoEditor)monacoEditor.layout();},350);
 }
 
 // ── Floating Results Panel ──
@@ -572,50 +578,61 @@ function makeDraggable(el,header){
   };
 }
 
-// ── CodeMirror IDE ──
-let cmEditor=null;
+// ── Monaco IDE ──
 let _darkTheme=true;
 
-function initCodeMirror(){
-  const ta=document.getElementById('code-area');
-  cmEditor=CodeMirror.fromTextArea(ta,{
-    mode:'python',
-    theme:'dracula',
-    lineNumbers:true,
-    matchBrackets:true,
-    autoCloseBrackets:true,
-    styleActiveLine:true,
-    indentUnit:4,
-    tabSize:4,
-    indentWithTabs:false,
-    lineWrapping:false,
-    extraKeys:{
-      'Tab':function(cm){
-        if(cm.somethingSelected())cm.indentSelection('add');
-        else cm.replaceSelection('    ','end');
-      },
-      'Shift-Tab':function(cm){cm.indentSelection('subtract');},
-      'Ctrl-Enter':function(){runTests();},
-      'Cmd-Enter':function(){runTests();},
-      'Ctrl-/':function(cm){cm.toggleComment();},
-      'Cmd-/':function(cm){cm.toggleComment();},
-    }
-  });
-  cmEditor.on('change',()=>{
-    saveCode();
-    showAutosave();
+function initMonaco(){
+  require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' }});
+  require(['vs/editor/editor.main'], function() {
+    const wrapper = document.getElementById('editor-wrapper');
+    wrapper.innerHTML = '';
+    
+    // Add custom theme matching our Dracula colors if desired, or use default vs-dark
+    monacoEditor = monaco.editor.create(wrapper, {
+      value: _pendingCode || '',
+      language: 'python',
+      theme: _darkTheme ? 'vs-dark' : 'vs',
+      automaticLayout: true,
+      fontSize: 14,
+      fontFamily: '"JetBrains Mono", "Fira Code", "Consolas", monospace',
+      fontLigatures: true,
+      minimap: { enabled: false },
+      wordWrap: 'on',
+      autoClosingBrackets: 'always',
+      autoClosingQuotes: 'always',
+      formatOnPaste: true,
+      suggestOnTriggerCharacters: true,
+      scrollBeyondLastLine: false,
+      padding: { top: 16, bottom: 16 },
+      scrollbar: {
+        verticalScrollbarSize: 10,
+        horizontalScrollbarSize: 10
+      }
+    });
+
+    monacoEditor.onDidChangeModelContent(() => {
+      saveCode();
+      showAutosave();
+      updateStatusBar();
+    });
+
+    monacoEditor.onDidChangeCursorPosition(() => updateStatusBar());
+
+    monacoEditor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, function() {
+      runTests();
+    });
+    
     updateStatusBar();
   });
-  cmEditor.on('cursorActivity',()=>updateStatusBar());
-  cmEditor.setSize('100%','100%');
-  setTimeout(()=>cmEditor.refresh(),50);
 }
 
 function updateStatusBar(){
-  if(!cmEditor)return;
-  const cur=cmEditor.getCursor();
-  document.getElementById('cursor-pos').textContent=`Ln ${cur.line+1}, Col ${cur.ch+1}`;
-  const chars=cmEditor.getValue().length;
+  if(!monacoEditor)return;
+  const pos=monacoEditor.getPosition();
+  if(pos) {
+    document.getElementById('cursor-pos').textContent=`Ln ${pos.lineNumber}, Col ${pos.column}`;
+  }
+  const chars=monacoEditor.getValue().length;
   document.getElementById('char-count').textContent=`${chars} char${chars!==1?'s':''}`;
 }
 
@@ -636,11 +653,13 @@ function showAutosave(){
 function toggleTheme(){
   _darkTheme=!_darkTheme;
   document.body.classList.toggle('light-theme',!_darkTheme);
-  if(cmEditor)cmEditor.setOption('theme',_darkTheme?'dracula':'eclipse');
+  if(typeof monaco !== 'undefined' && monacoEditor) {
+    monaco.editor.setTheme(_darkTheme?'vs-dark':'vs');
+  }
   document.getElementById('theme-btn').textContent=_darkTheme?'☀️':'🌙';
 }
 
-// ── Patch saveCode to use cmEditor ──
+// ── Patch saveCode to use Editor ──
 function saveCode(){
   if(!currentQ)return;
   try{
@@ -652,7 +671,7 @@ function saveCode(){
 
 // ── Init ──
 document.addEventListener('DOMContentLoaded',()=>{
-  initCodeMirror();
+  initMonaco();
   buildWeekTabs();
   buildQuestionTabs(1);
   selectQ(questions[0]);

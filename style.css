@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap');
 :root{
   --bg:#0f172a;--bg2:#1e293b;--bg3:#334155;--bg4:#475569;
+  --bg-section:rgba(15,23,42,.6);
   --border:rgba(148,163,184,.12);--border2:rgba(148,163,184,.2);
   --text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;
   --accent:#3b82f6;--accent2:#60a5fa;--accent-glow:rgba(59,130,246,.15);
@@ -61,7 +62,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .q-content{flex:1;overflow-y:auto;padding:24px}
 .q-title{font-size:20px;font-weight:700;margin-bottom:14px;color:var(--text);letter-spacing:-.02em;line-height:1.3}
 .q-desc{font-size:13px;color:var(--text2);line-height:1.85;white-space:pre-wrap;margin-bottom:16px}
-.q-section{margin-bottom:14px;padding:14px 16px;background:rgba(15,23,42,.6);border-radius:var(--radius);border:1px solid var(--border)}
+.q-section{margin-bottom:14px;padding:14px 16px;background:var(--bg-section);border-radius:var(--radius);border:1px solid var(--border)}
 .q-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--accent2);margin-bottom:8px}
 .q-section-body{font-size:12px;color:var(--text2);line-height:1.7;white-space:pre-wrap;font-family:var(--mono)}
 .q-sample{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap}
@@ -105,49 +106,12 @@ kbd{display:inline-block;padding:1px 5px;font-size:10px;font-family:var(--mono);
 .status-bar{display:flex;align-items:center;gap:16px;padding:3px 16px;background:var(--bg2);border-top:1px solid var(--border);font-size:10px;font-family:var(--mono);color:var(--text3);flex-shrink:0}
 .status-shortcut{margin-left:auto;opacity:.5;font-size:9px}
 
-/* ══ Code Editor (CodeMirror) ══ */
-.editor-wrapper{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;position:relative;font-size:13px;border-radius:0;margin:0;box-shadow:inset 0 0 40px rgba(59,130,246,.03)}
-.CodeMirror,.CodeMirror *{font-variant-ligatures:none!important;font-feature-settings:"liga" 0,"calt" 0,"dlig" 0!important}
-.CodeMirror{height:100%!important;font-family:var(--mono)!important;font-size:inherit!important;line-height:1.8!important;background:var(--bg)!important;border:none!important}
-.CodeMirror-scroll{padding-bottom:40px}
-.CodeMirror-gutters{background:rgba(15,23,42,.8)!important;border-right:1px solid var(--border)!important;padding-right:4px}
-.CodeMirror-linenumber{color:var(--text3)!important;padding:0 10px 0 6px!important;font-size:11px;font-variant-ligatures:none!important}
-.CodeMirror-activeline-background{background:rgba(59,130,246,.06)!important}
-.CodeMirror-cursor{border-left:2px solid var(--accent2)!important}
-.CodeMirror-matchingbracket{color:#fff!important;font-weight:bold;background:rgba(59,130,246,.25);border-radius:2px}
-.CodeMirror-nonmatchingbracket{color:var(--red)!important}
-.CodeMirror-selected{background:rgba(59,130,246,.18)!important}
-
-/* ── Syntax Colors ── */
-.cm-keyword{color:#ff7b72!important;font-weight:600!important}
-.cm-builtin{color:#79c0ff!important}
-.cm-string,.cm-string-2{color:#a5d6ff!important}
-.cm-comment{color:#6b7280!important;font-style:italic!important}
-.cm-number{color:#fbbf24!important}
-.cm-operator{color:#ff7b72!important;font-weight:500!important}
-.cm-variable,.cm-variable-2,.cm-variable-3,.cm-property{color:var(--text)!important}
-.cm-def{color:#c4b5fd!important;font-weight:600!important}
-.cm-meta{color:#c4b5fd!important}
-.cm-atom{color:#79c0ff!important}
-.cm-error{color:var(--red)!important;border-bottom:1px dashed var(--red)}
+/* ══ Code Editor (Monaco) ══ */
+.editor-wrapper{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;position:relative;border-radius:0;margin:0;box-shadow:inset 0 0 40px rgba(59,130,246,.03)}
 
 /* ── Light Theme ── */
-body.light-theme{--bg:#ffffff;--bg2:#f8fafc;--bg3:#e2e8f0;--bg4:#cbd5e1;--border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.15);--text:#0f172a;--text2:#475569;--text3:#94a3b8;--accent:#2563eb;--accent2:#3b82f6;--accent-glow:rgba(37,99,235,.08);--green:#16a34a;--red:#dc2626;--yellow:#ca8a04}
+body.light-theme{--bg:#ffffff;--bg2:#f8fafc;--bg3:#e2e8f0;--bg4:#cbd5e1;--bg-section:rgba(0,0,0,.03);--border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.15);--text:#0f172a;--text2:#475569;--text3:#94a3b8;--accent:#2563eb;--accent2:#3b82f6;--accent-glow:rgba(37,99,235,.08);--green:#16a34a;--red:#dc2626;--yellow:#ca8a04;--cyan:#0891b2;--orange:#d97706;--purple:#7c3aed}
 body.light-theme .top-nav{background:rgba(255,255,255,.85)}
-body.light-theme .CodeMirror{background:#fff!important;color:#0f172a!important}
-body.light-theme .CodeMirror-gutters{background:#f8fafc!important;border-right-color:var(--border)!important}
-body.light-theme .CodeMirror-activeline-background{background:rgba(37,99,235,.04)!important}
-body.light-theme .CodeMirror-cursor{border-left-color:var(--accent)!important}
-body.light-theme .cm-keyword{color:#be123c!important}
-body.light-theme .cm-builtin{color:#1d4ed8!important}
-body.light-theme .cm-string,.body.light-theme .cm-string-2{color:#0e7490!important}
-body.light-theme .cm-comment{color:#9ca3af!important}
-body.light-theme .cm-number{color:#b45309!important}
-body.light-theme .cm-operator{color:#be123c!important}
-body.light-theme .cm-def{color:#7c3aed!important}
-body.light-theme .cm-atom{color:#1d4ed8!important}
-body.light-theme .cm-variable,body.light-theme .cm-variable-2,body.light-theme .cm-variable-3,body.light-theme .cm-property{color:#0f172a!important}
-body.light-theme .cm-meta{color:#7c3aed!important}
 body.light-theme .status-bar{background:#f8fafc}
 
 /* ── Run bar ── */
@@ -230,7 +194,6 @@ body.light-theme .status-bar{background:#f8fafc}
   .ide-actions .btn-sm{flex:1;text-align:center}
   .run-hint{display:none}
   .status-bar{font-size:9px;padding:3px 12px;gap:10px}
-  .CodeMirror{font-size:inherit!important}
   .editor-wrapper{min-height:200px;font-size:12px}
   .run-bar{padding:8px 12px}
   .results-body{padding:8px 12px}
@@ -255,7 +218,6 @@ body.light-theme .status-bar{background:#f8fafc}
   .q-title{font-size:15px}
   .q-desc{font-size:11px}
   .btn{font-size:12px;padding:8px 12px}
-  .CodeMirror{font-size:inherit!important}
   .editor-wrapper{font-size:11px}
   .panel-toggle{width:48px;height:48px;font-size:18px;bottom:16px;right:16px}
 }
