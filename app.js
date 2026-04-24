@@ -595,7 +595,7 @@ function initMonaco(){
       automaticLayout: true,
       fontSize: 14,
       fontFamily: '"JetBrains Mono", "Fira Code", "Consolas", monospace',
-      fontLigatures: true,
+      fontLigatures: false,
       minimap: { enabled: false },
       wordWrap: 'on',
       autoClosingBrackets: 'always',
