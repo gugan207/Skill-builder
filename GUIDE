@@ -2,77 +2,71 @@
 
 ## 📁 Project Files
 
-Your app is in `c:\Users\gugan\Downloads\skill builder\` and consists of just **4 files**:
+Your app is in `c:\Users\gugan\Downloads\skill builder\` and consists of the following key files:
 
 | File | Purpose |
 |------|---------|
-| `mit_skill_builder_practice.html` | Main page (open this) |
-| `style.css` | Dark theme styling |
+| `index.html` / `login.html` | Entry points and authentication |
+| `mit_skill_builder_practice.html` | Main practice IDE page |
+| `style.css` / `login.css` | Dark theme and layout styling |
 | `questions.js` | All 24 questions, tests & solutions |
-| `app.js` | Code editor, Skulpt runner, UI logic |
+| `app.js` / `app-sync.js` / `auth.js` | Code editor, UI logic, Cloud Sync, and Auth |
+| `supabase_setup.sql` | Database setup instructions |
+| `export_data.py` | 👑 Admin Tool: Export all student points to CSV/Excel |
+
+---
+
+## 📈 Admin: Exporting Student Data
+
+You can easily export every user's progress and points per week into an Excel-compatible CSV file without touching the frontend codebase.
+
+### Step 1: Database Permission (One-time setup)
+Run the following in your Supabase Dashboard -> SQL Editor to allow the export script to read all users:
+```sql
+CREATE POLICY "Allow read all profiles" ON public.profiles FOR SELECT USING (true);
+CREATE POLICY "Allow read all progress" ON public.user_progress FOR SELECT USING (true);
+```
+
+### Step 2: Run the Exporter
+Open your terminal in the project folder and run:
+```bash
+python export_data.py
+```
+This will securely fetch cloud data and generate a file like `SkillBuilder_Advanced_Export_2026-04-24_15-30-00.csv` in your folder. Double-click it to open in Excel perfectly formatted!
 
 ---
 
 ## 🖥️ How to Run Locally
 
 ### Option 1: Python Server (Recommended)
-```
+```bash
 cd "c:\Users\gugan\Downloads\skill builder"
 python -m http.server 8080
 ```
-Then open **http://localhost:8080/mit_skill_builder_practice.html** in your browser.
+Then open **http://localhost:8080** in your browser.
 
 ### Option 2: VS Code Live Server
 1. Install the "Live Server" extension in VS Code
-2. Right-click `mit_skill_builder_practice.html` → **Open with Live Server**
+2. Right-click `index.html` → **Open with Live Server**
 3. It auto-opens in your browser
-
-### Option 3: Direct File Open
-> [!WARNING]
-> This won't work because Skulpt loads from CDN and browsers block scripts on `file://` URLs.
 
 ---
 
 ## 🌐 How to Share With Friends
 
 ### ✅ Option 1: GitHub Pages (FREE — Best Option)
-
-1. **Create a GitHub repo:**
-   ```
-   cd "c:\Users\gugan\Downloads\skill builder"
-   git init
-   git add .
-   git commit -m "MIT Skill Builder"
-   git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/skill-builder.git
-   git push -u origin main
-   ```
-
-2. **Enable GitHub Pages:**
-   - Go to repo → **Settings** → **Pages**
-   - Source: **Deploy from a branch**
-   - Branch: `main` → `/ (root)`
-   - Click **Save**
-
-3. **Share the link:**
-   ```
-   https://YOUR_USERNAME.github.io/skill-builder/mit_skill_builder_practice.html
-   ```
-   Your friends just open this URL in any browser — no installation needed!
+Since the app connects directly to Supabase, you can host it anywhere for free!
+1. Go to your repo on GitHub → **Settings** → **Pages**
+2. Source: **Deploy from a branch**
+3. Branch: `main` → `/ (root)`
+4. Click **Save**
+5. Share the generated link!
 
 ### ✅ Option 2: Netlify (FREE — Easiest)
-
 1. Go to [netlify.com](https://netlify.com) and sign up
 2. Drag and drop your `skill builder` folder onto the Netlify dashboard
 3. You get a link like `https://cool-name-123.netlify.app`
 4. Share that link — done!
-
-### ✅ Option 3: Share as ZIP
-
-1. Zip the `skill builder` folder
-2. Send to friends via WhatsApp/Telegram/email
-3. They extract and run `python -m http.server 8080`
-4. Open `http://localhost:8080/mit_skill_builder_practice.html`
 
 ---
 
@@ -80,13 +74,13 @@ Then open **http://localhost:8080/mit_skill_builder_practice.html** in your brow
 
 | Feature | Description |
 |---------|-------------|
+| ☁️ Cloud Auth | Secure Login & Sign Up powered by Supabase |
 | ⚡ Real Python Execution | Code actually runs via Skulpt (Python in browser) |
 | 📝 24 Questions | Across 5 weeks of MIT Skill Builder |
 | 🎯 Auto Test Cases | Click Run Tests to validate code |
 | 🐛 Error Details | Shows exact line, character, and fix hints |
-| 💡 Hints & Solutions | Built-in help for every question |
-| 💾 Auto-Save | Code persists in browser localStorage |
-| 📊 Progress Tracking | Tracks solved questions |
+| 💾 Cloud Sync | Code & progress automatically backs up to the cloud! |
+| 📊 Progress Tracking | Tracks solved questions and saves code |
 | 🔀 Resizable Panels | Drag divider between question & IDE |
 
 > [!TIP]
