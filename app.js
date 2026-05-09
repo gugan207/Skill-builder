@@ -845,6 +845,8 @@ function selectMCQOption(idx){
     const tab=document.getElementById(`qtab-mcq-${q.week}-${q.num}`);
     if(tab)tab.classList.add('solved');
     updateProgress();
+    // Auto-advance to next question after a short delay
+    setTimeout(()=>{navMCQ(1);},800);
   }else{
     resultEl.className='mcq-result mcq-result-wrong';
     resultEl.innerHTML=`❌ Incorrect. The correct answer is: <strong>${escapeHtml(correct)}</strong>`;
