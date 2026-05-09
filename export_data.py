@@ -9,6 +9,11 @@ from datetime import datetime
 SUPABASE_URL = 'https://qvdsyvqjckpbegyhzeyi.supabase.co'
 SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2ZHN5dnFqY2twYmVneWh6ZXlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NzgyOTQsImV4cCI6MjA5MjQ1NDI5NH0.J-jlxJLDvUHFWHhVH0VDOiRkfSQ6x4S1PrN5RxPCMiY'
 
+# Question counts per week (coding + MCQ)
+WEEK_CODING = {1: 5, 2: 5, 3: 5, 4: 5, 5: 4}   # 24 coding total
+WEEK_MCQ    = {1: 20, 2: 20, 3: 20, 4: 20, 5: 10}  # 90 MCQ total
+TOTAL_QUESTIONS = 114
+
 headers = {
     'apikey': SUPABASE_KEY,
     'Authorization': f'Bearer {SUPABASE_KEY}',
@@ -39,7 +44,8 @@ def fetch_table_data(table_name):
 
 def main():
     print("=" * 60)
-    print("MIT Skill Builder - Advanced Data Exporter")
+    print("MIT Skill Builder - Advanced Data Exporter v2.0")
+    print(f"Total Questions: {TOTAL_QUESTIONS} (24 Coding + 90 MCQ)")
     print("=" * 60)
     print("Fetching user profiles and progress data from the cloud...")
 
@@ -79,18 +85,37 @@ def main():
         else:
             solved_questions = solved_raw if isinstance(solved_raw, list) else []
             
-        # Calculate points per week (Weeks 1 through 5)
-        points = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 'total': 0}
+        # Calculate points per week — coding and MCQ separately
+        coding_pts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
+        mcq_pts    = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
+        
         for q in solved_questions:
-            parts = str(q).split('-')
-            if len(parts) == 2:
-                try:
-                    week = int(parts[0])
-                    if week in points:
-                        points[week] += 1
-                        points['total'] += 1
-                except ValueError:
-                    pass # Ignore malformed question IDs
+            q_str = str(q)
+            if q_str.startswith('mcq-'):
+                # MCQ format: mcq-week-num
+                parts = q_str.split('-')
+                if len(parts) == 3:
+                    try:
+                        week = int(parts[1])
+                        if week in mcq_pts:
+                            mcq_pts[week] += 1
+                    except ValueError:
+                        pass
+            else:
+                # Coding format: week-num
+                parts = q_str.split('-')
+                if len(parts) == 2:
+                    try:
+                        week = int(parts[0])
+                        if week in coding_pts:
+                            coding_pts[week] += 1
+                    except ValueError:
+                        pass
+        
+        total_coding = sum(coding_pts.values())
+        total_mcq = sum(mcq_pts.values())
+        grand_total = total_coding + total_mcq
+        completion = round((grand_total / TOTAL_QUESTIONS) * 100, 1) if TOTAL_QUESTIONS > 0 else 0
         
         # Format dates robustly
         joined_raw = user.get('created_at', '')
@@ -103,29 +128,42 @@ def main():
             'User ID': user_id,
             'Name': user.get('full_name', 'Unknown') or 'Unknown',
             'Email': user.get('email', 'Unknown') or 'Unknown',
-            'Week 1 Points': points[1],
-            'Week 2 Points': points[2],
-            'Week 3 Points': points[3],
-            'Week 4 Points': points[4],
-            'Week 5 Points': points[5],
-            'Total Points': points['total'],
+            'W1 Coding': f"{coding_pts[1]}/{WEEK_CODING[1]}",
+            'W1 MCQ': f"{mcq_pts[1]}/{WEEK_MCQ[1]}",
+            'W2 Coding': f"{coding_pts[2]}/{WEEK_CODING[2]}",
+            'W2 MCQ': f"{mcq_pts[2]}/{WEEK_MCQ[2]}",
+            'W3 Coding': f"{coding_pts[3]}/{WEEK_CODING[3]}",
+            'W3 MCQ': f"{mcq_pts[3]}/{WEEK_MCQ[3]}",
+            'W4 Coding': f"{coding_pts[4]}/{WEEK_CODING[4]}",
+            'W4 MCQ': f"{mcq_pts[4]}/{WEEK_MCQ[4]}",
+            'W5 Coding': f"{coding_pts[5]}/{WEEK_CODING[5]}",
+            'W5 MCQ': f"{mcq_pts[5]}/{WEEK_MCQ[5]}",
+            'Total Coding': f"{total_coding}/24",
+            'Total MCQ': f"{total_mcq}/90",
+            'Grand Total': f"{grand_total}/{TOTAL_QUESTIONS}",
+            'Completion %': f"{completion}%",
             'Joined Date': joined_date,
             'Last Active': last_active
         })
 
-    # Sort users primarily by Total Points (descending), then alphabetically by Name
-    export_rows.sort(key=lambda x: (x['Total Points'], x['Name']), reverse=True)
+    # Sort users primarily by grand total (descending), then alphabetically by Name
+    def sort_key(x):
+        total = int(x['Grand Total'].split('/')[0])
+        return (-total, x['Name'])
+    export_rows.sort(key=sort_key)
 
     # Generate timestamped filename to prevent overwriting
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    filename = f'SkillBuilder_Advanced_Export_{timestamp}.csv'
+    filename = f'SkillBuilder_Export_v2_{timestamp}.csv'
 
     print(f"\nFormatting data and generating CSV file: {filename}")
     
     fieldnames = [
         'User ID', 'Name', 'Email', 
-        'Week 1 Points', 'Week 2 Points', 'Week 3 Points', 
-        'Week 4 Points', 'Week 5 Points', 'Total Points', 
+        'W1 Coding', 'W1 MCQ', 'W2 Coding', 'W2 MCQ',
+        'W3 Coding', 'W3 MCQ', 'W4 Coding', 'W4 MCQ',
+        'W5 Coding', 'W5 MCQ',
+        'Total Coding', 'Total MCQ', 'Grand Total', 'Completion %',
         'Joined Date', 'Last Active'
     ]
     
