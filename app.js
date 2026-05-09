@@ -171,6 +171,9 @@ function updateProgress(){
 // ── Select Question ──
 function selectQ(q){
   currentQ=q;
+  currentMCQ=null; // clear MCQ state
+  // Ensure IDE is visible when selecting a coding question
+  toggleIDEVisibility(true);
   document.querySelectorAll('.q-tab').forEach(b=>b.classList.remove('active'));
   const tab=document.getElementById(`qtab-${q.week}-${q.num}`);
   if(tab)tab.classList.add('active');
