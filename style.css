@@ -318,6 +318,11 @@ body.light-theme .mcq-final-card{background:rgba(255,255,255,.8);box-shadow:0 20
 @keyframes mcqRingDraw{from{stroke-dasharray:0 326.7}to{}}
 
 /* ═══ MCQ Responsive ═══ */
+@media(max-width:768px){
+  .mcq-entry-badge{font-size:9px;padding:2px 6px}
+  .q-tab-mcq-entry{padding:8px 12px!important;font-size:11px!important}
+  .mcq-progress-badge{font-size:11px}
+}
 @media(max-width:600px){
   .mcq-option{padding:12px 14px;font-size:12px}
   .mcq-letter{width:30px;height:30px;font-size:12px}
@@ -326,6 +331,9 @@ body.light-theme .mcq-final-card{background:rgba(255,255,255,.8);box-shadow:0 20
   .mcq-result{font-size:14px;padding:10px 14px}
   .mcq-options-area{padding:16px 12px;gap:10px}
   .mcq-panel-header{padding:8px 14px}
+  .mcq-progress-bar-wrap{height:3px}
+  .q-tab-mcq-entry{padding:7px 10px!important;font-size:10px!important}
+  .mcq-entry-icon{font-size:12px}
   .mcq-final-overlay{padding:16px}
   .mcq-final-card{padding:28px 20px;border-radius:16px}
   .mcq-final-emoji{font-size:42px}
@@ -335,4 +343,15 @@ body.light-theme .mcq-final-card{background:rgba(255,255,255,.8);box-shadow:0 20
   .mcq-stat-num{font-size:22px}
   .mcq-final-stats{gap:14px}
   .mcq-restart-btn{padding:12px 20px!important;font-size:13px!important}
+}
+@media(max-width:400px){
+  .q-tab-mcq-entry{padding:6px 8px!important;font-size:10px!important}
+  .mcq-entry-badge{font-size:8px;padding:1px 5px}
+  .mcq-option{padding:10px 12px;gap:10px}
+  .mcq-letter{width:26px;height:26px;font-size:11px;border-radius:8px}
+  .mcq-final-card{padding:20px 16px}
+  .mcq-final-emoji{font-size:36px}
+  .mcq-final-title{font-size:19px}
+  .mcq-final-score-ring{width:80px;height:80px}
+  .mcq-score-text{font-size:22px}
 }

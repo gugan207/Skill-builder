@@ -1,6 +1,7 @@
 let currentQ=null,currentWeek=1,solved=new Set();
 let isMCQMode=false;
 let shuffledMCQs={}; // per-week shuffled MCQ arrays
+let mcqTransitioning=false; // guard against rapid clicks during auto-advance
 
 // ── Shuffle utility (Fisher-Yates) — fresh random every page load ──
 function shuffleArray(arr){
@@ -475,6 +476,7 @@ async function runTests(){
 
 // ── Navigation ──
 function navQuestion(dir){
+  if(mcqTransitioning)return; // block during auto-advance
   if(isMCQMode){
     navMCQ(dir);
     return;
@@ -490,6 +492,8 @@ function navQuestion(dir){
     const mcqs=shuffledMCQs[currentWeek]||[];
     if(mcqs.length){
       isMCQMode=true;
+      mcqSessionCorrect=0;
+      mcqSessionTotal=0;
       selectMCQ(mcqs[0]);
     }
   }else{
@@ -851,7 +855,7 @@ function escapeHtml(text){
 }
 
 function selectMCQOption(idx){
-  if(mcqAnswered)return;
+  if(mcqAnswered||mcqTransitioning)return; // block double-clicks and mid-transition clicks
   mcqAnswered=true;
   const q=currentMCQ;
   if(!q)return;
@@ -887,30 +891,36 @@ function selectMCQOption(idx){
     try{
       localStorage.setItem(solvedKey(),JSON.stringify([...solved]));
     }catch(e){console.warn('Could not save progress:',e);}
-    const tab=document.getElementById(`qtab-mcq-${q.week}-${q.num}`);
-    if(tab)tab.classList.add('solved');
     updateProgress();
-    // Check if this was the last MCQ — show final result instead of auto-advancing
-    const mcqs=shuffledMCQs[currentWeek]||[];
-    const currentIdx=mcqs.findIndex(mq=>mq.num===q.num);
-    if(currentIdx>=mcqs.length-1){
-      // Last question — show final result after brief delay
-      setTimeout(()=>{showMCQFinalResult();},900);
-    }else{
-      // Auto-advance to next question after a short delay
-      setTimeout(()=>{navMCQ(1);},800);
-    }
+    updateMCQEntryBadge();
   }else{
     resultEl.className='mcq-result mcq-result-wrong';
     resultEl.innerHTML=`❌ Incorrect. The correct answer is: <strong>${escapeHtml(correct)}</strong>`;
-    // Check if this was the last MCQ
-    const mcqs=shuffledMCQs[currentWeek]||[];
-    const currentIdx=mcqs.findIndex(mq=>mq.num===q.num);
-    if(currentIdx>=mcqs.length-1){
-      // Last question — show final result after a longer delay so user can read the answer
-      setTimeout(()=>{showMCQFinalResult();},2500);
-    }
   }
+
+  // Auto-advance or show final result
+  const mcqs=shuffledMCQs[currentWeek]||[];
+  const currentIdx=mcqs.findIndex(mq=>mq.num===q.num);
+  const isLast=currentIdx>=mcqs.length-1;
+  const delay=isCorrect?900:2500;
+
+  mcqTransitioning=true;
+  setTimeout(()=>{
+    mcqTransitioning=false;
+    if(isLast){
+      showMCQFinalResult();
+    }else{
+      navMCQ(1);
+    }
+  },delay);
+}
+
+// Update the MCQ entry button badge with current solved count
+function updateMCQEntryBadge(){
+  const mcqs=shuffledMCQs[currentWeek]||[];
+  const mcqSolved=mcqs.filter(q=>solved.has(qKey(q))).length;
+  const badge=document.querySelector(`#qtab-mcq-entry-${currentWeek} .mcq-entry-badge`);
+  if(badge) badge.textContent=`${mcqSolved}/${mcqs.length}`;
 }
 
 function showMCQFinalResult(){
@@ -1011,7 +1021,7 @@ function restartMCQ(){
 }
 
 function navMCQ(dir){
-  if(!currentMCQ)return;
+  if(!currentMCQ||mcqTransitioning)return; // block during auto-advance
   const mcqs=shuffledMCQs[currentWeek]||[];
   const idx=mcqs.findIndex(q=>q.num===currentMCQ.num);
   const next=idx+dir;
