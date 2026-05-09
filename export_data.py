@@ -125,7 +125,6 @@ def main():
         last_active = updated_raw.split('T')[0] if updated_raw else 'Never'
             
         export_rows.append({
-            'User ID': user_id,
             'Name': user.get('full_name', 'Unknown') or 'Unknown',
             'Email': user.get('email', 'Unknown') or 'Unknown',
             'W1 Coding': f"{coding_pts[1]}/{WEEK_CODING[1]}",
@@ -152,6 +151,11 @@ def main():
         return (-total, x['Name'])
     export_rows.sort(key=sort_key)
 
+    # Add S.No and Rank after sorting
+    for i, row in enumerate(export_rows, 1):
+        row['S.No'] = i
+        row['Rank'] = i
+
     # Generate timestamped filename to prevent overwriting
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f'SkillBuilder_Export_v2_{timestamp}.csv'
@@ -159,7 +163,7 @@ def main():
     print(f"\nFormatting data and generating CSV file: {filename}")
     
     fieldnames = [
-        'User ID', 'Name', 'Email', 
+        'S.No', 'Rank', 'Name', 'Email', 
         'W1 Coding', 'W1 MCQ', 'W2 Coding', 'W2 MCQ',
         'W3 Coding', 'W3 MCQ', 'W4 Coding', 'W4 MCQ',
         'W5 Coding', 'W5 MCQ',
