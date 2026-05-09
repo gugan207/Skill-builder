@@ -271,5 +271,108 @@ answer:"float"},
 {week:1,num:20,type:'mcq',
 question:"Which of the following is a valid float value in Python?",
 options:["10.5","10","\"10.5\"","True"],
-answer:"10.5"}
+answer:"10.5"},
+
+// ══════════════════════════════════════════════════════════════
+//  Week 2 — One Mark MCQ Questions
+// ══════════════════════════════════════════════════════════════
+{week:2,num:1,type:'mcq',
+question:"What will be the output of the following code?\n\nnum = -5\nresult = abs(num)\nprint(result)",
+options:["5","-5","0","25"],
+answer:"5"},
+
+{week:2,num:2,type:'mcq',
+question:"What will be the output of the following code?\n\nnumber = 7\nresult = abs(number) + pow(number, 2)\nprint(result)",
+options:["63","56","49","58"],
+answer:"56"},
+
+{week:2,num:3,type:'mcq',
+question:"What will be the output of the following code?\n\nnum = 16\nresult = pow(num, 0.5)\nprint(result)",
+options:["4.0","16.0","256","2.0"],
+answer:"4.0"},
+
+{week:2,num:4,type:'mcq',
+question:"What will be the output of the following code?\n\nnum1 = 10\nnum2 = -10\nresult = abs(num1) + abs(num2)\nprint(result)",
+options:["-20","0","20","10"],
+answer:"20"},
+
+{week:2,num:5,type:'mcq',
+question:"What will be the output of the following code?\n\ntext = \"Hello, World!\"\nresult = len(text.split())\nprint(result)",
+options:["5","6","13","2"],
+answer:"2"},
+
+{week:2,num:6,type:'mcq',
+question:"What will be the output of the following code?\n\na = 10\nb = -9\nresult = min(a, abs(b))\nprint(result)",
+options:["10","-9","0","9"],
+answer:"9"},
+
+{week:2,num:7,type:'mcq',
+question:"What will be the output of the following code?\n\nvalue = 42\nresult = abs(value) + len(str(value))\nprint(result)",
+options:["42","84","44","43"],
+answer:"44"},
+
+{week:2,num:8,type:'mcq',
+question:"What will be the output of the following code?\n\nx = 2\ny = 3\nresult = max(x, x ** y)\nprint(result)",
+options:["8","3","2","9"],
+answer:"8"},
+
+{week:2,num:9,type:'mcq',
+question:"What is the output of the code shown?\n\ndef f1():\n    global x\n    x+=1\n    print(x)\nx=12\nprint(\"x\")",
+options:["Compile time error","13","14","x"],
+answer:"x"},
+
+{week:2,num:10,type:'mcq',
+question:"What is the output of the code shown below?\n\ndef f1(x):\n    x += 1\n    print(x)\nglobal_variable = 15\nf1(global_variable)\nprint(\"hello\")",
+options:["Compile time error","hello","16\nhello","16 hello"],
+answer:"16\nhello"},
+
+{week:2,num:11,type:'mcq',
+question:"What is the output of the code shown?\n\ndef f():\n    global a\n    print(a)\n    a = \"hello\"\n    print(a)\na = \"world\"\nf()\nprint(a)",
+options:["hello hello world","world world hello","hello world world","world hello hello"],
+answer:"world hello hello"},
+
+{week:2,num:12,type:'mcq',
+question:"What will be the output of the following code?\n\nimport math\nprint(math.ceil(3.4))",
+options:["3","4","4.0","3.0"],
+answer:"4"},
+
+{week:2,num:13,type:'mcq',
+question:"What will be the output of the given code?\n\nimport math\nprint(math.floor(0o10))",
+options:["8","10","0","9"],
+answer:"8"},
+
+{week:2,num:14,type:'mcq',
+question:"What will be the output of the given code?\n\nimport math\nprint(math.isinf(float('-inf')))",
+options:["True","error, the minus sign shouldn't have been inside the brackets","error, there is no function called isinf","False"],
+answer:"True"},
+
+{week:2,num:15,type:'mcq',
+question:"What will be the output of the following code?\n\ndata = [1, 2, 3, 4, 5, 6]\nresult = list(filter(lambda x: x % 2 == 0, data))\nresult = [x * 2 for x in result]\nprint(result)",
+options:["[4, 8, 12]","[2, 4, 6, 8, 10, 12]","[2, 4, 6]","[4, 8, 12, 16, 20]"],
+answer:"[4, 8, 12]"},
+
+{week:2,num:16,type:'mcq',
+question:"What will be the output of the following code?\n\nnumbers = [3, 5, 7, 2, 9]\nresult = list(map(lambda x: x + 5, numbers))\nresult = sorted(result, reverse=True)\nprint(result)",
+options:["[14, 12, 11, 9, 7]","[14, 12, 10, 8, 7]","[14, 12, 10, 9, 7]","[4, 8, 12, 16, 20]"],
+answer:"[14, 12, 10, 8, 7]"},
+
+{week:2,num:17,type:'mcq',
+question:"What will be the output of the following code?\n\ndata = [5, 4, 7, 2, 8]\nresult = list(map(lambda x: x * 2 if x % 2 == 0 else x + 1, data))\nprint(result)",
+options:["[10, 8, 14, 4, 16]","[2, 4, 6, 8, 10, 12]","[5, 8, 7, 4, 16]","[6, 8, 8, 4, 16]"],
+answer:"[6, 8, 8, 4, 16]"},
+
+{week:2,num:18,type:'mcq',
+question:"What will be the output of the following code?\n\nwords = ['hello', 'world', 'python', 'is', 'awesome']\nresult = list(map(lambda word: word.upper(), words))\nresult = sorted(result, key=lambda x: len(x))\nprint(result)",
+options:["['HELLO', 'WORLD', 'PYTHON', 'AWESOME', 'IS']","['IS', 'HELLO', 'WORLD', 'AWESOME']","['AWESOME', 'PYTHON', 'WORLD', 'HELLO', 'IS']","['IS', 'HELLO', 'WORLD', 'PYTHON', 'AWESOME']"],
+answer:"['IS', 'HELLO', 'WORLD', 'PYTHON', 'AWESOME']"},
+
+{week:2,num:19,type:'mcq',
+question:"What will be the output of the following code?\n\nnumbers = [10, 20, 30, 40, 50]\nresult = list(map(lambda x: x // 10, numbers))\nresult = sum(result)\nprint(result)",
+options:["6","5","15","10"],
+answer:"15"},
+
+{week:2,num:20,type:'mcq',
+question:"What will be the output of the following code?\n\nmultiply = lambda x: x * 3\nresult = multiply(5)\nprint(result)",
+options:["18","9","12","15"],
+answer:"15"}
 ];

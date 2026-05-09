@@ -106,6 +106,9 @@ function switchWeek(w){
 function switchToMCQWeek(w){
   currentWeek=w;
   isMCQMode=true;
+  // Reset session score for new week
+  mcqSessionCorrect=0;
+  mcqSessionTotal=0;
   document.querySelectorAll('.week-tab').forEach(b=>b.classList.remove('active'));
   const mcqTab=document.getElementById(`week-tab-mcq-${w}`);
   if(mcqTab) mcqTab.classList.add('active');
@@ -763,6 +766,8 @@ function saveCode(){
 // ══════════════════════════════════════════════════════════════
 let currentMCQ=null;
 let mcqAnswered=false;
+let mcqSessionCorrect=0;
+let mcqSessionTotal=0;
 
 function selectMCQ(q){
   currentQ=null; // clear coding question
@@ -819,6 +824,10 @@ function selectMCQOption(idx){
   const correct=q.answer;
   const isCorrect=selected===correct;
 
+  // Track session score
+  mcqSessionTotal++;
+  if(isCorrect) mcqSessionCorrect++;
+
   // Highlight all options
   opts.forEach((opt,i)=>{
     const btn=document.getElementById(`mcq-opt-${i}`);
@@ -845,12 +854,123 @@ function selectMCQOption(idx){
     const tab=document.getElementById(`qtab-mcq-${q.week}-${q.num}`);
     if(tab)tab.classList.add('solved');
     updateProgress();
-    // Auto-advance to next question after a short delay
-    setTimeout(()=>{navMCQ(1);},800);
+    // Check if this was the last MCQ — show final result instead of auto-advancing
+    const mcqs=shuffledMCQs[currentWeek]||[];
+    const currentIdx=mcqs.findIndex(mq=>mq.num===q.num);
+    if(currentIdx>=mcqs.length-1){
+      // Last question — show final result after brief delay
+      setTimeout(()=>{showMCQFinalResult();},900);
+    }else{
+      // Auto-advance to next question after a short delay
+      setTimeout(()=>{navMCQ(1);},800);
+    }
   }else{
     resultEl.className='mcq-result mcq-result-wrong';
     resultEl.innerHTML=`❌ Incorrect. The correct answer is: <strong>${escapeHtml(correct)}</strong>`;
+    // Check if this was the last MCQ
+    const mcqs=shuffledMCQs[currentWeek]||[];
+    const currentIdx=mcqs.findIndex(mq=>mq.num===q.num);
+    if(currentIdx>=mcqs.length-1){
+      // Last question — show final result after a longer delay so user can read the answer
+      setTimeout(()=>{showMCQFinalResult();},2500);
+    }
   }
+}
+
+function showMCQFinalResult(){
+  const mcqs=shuffledMCQs[currentWeek]||[];
+  const totalQ=mcqs.length;
+  const pct=totalQ>0?Math.round((mcqSessionCorrect/totalQ)*100):0;
+  const isPerfect=mcqSessionCorrect===totalQ;
+  const isGood=pct>=70;
+
+  // Build the final result overlay inside the MCQ answer panel
+  const mcqPanel=document.getElementById('mcq-answer-panel');
+  if(!mcqPanel)return;
+
+  let emoji='😔';
+  let message='Keep practicing! You\'ll get better.';
+  let gradientClass='final-result-low';
+  if(isPerfect){
+    emoji='🏆';
+    message='Perfect score! Outstanding work!';
+    gradientClass='final-result-perfect';
+  }else if(isGood){
+    emoji='🎉';
+    message='Great job! You\'re doing well!';
+    gradientClass='final-result-good';
+  }else if(pct>=50){
+    emoji='👍';
+    message='Good effort! Review and try again.';
+    gradientClass='final-result-mid';
+  }
+
+  mcqPanel.innerHTML=`
+    <div class="mcq-final-overlay ${gradientClass}">
+      <div class="mcq-final-card">
+        <div class="mcq-final-emoji">${emoji}</div>
+        <div class="mcq-final-title">Quiz Complete!</div>
+        <div class="mcq-final-subtitle">Week ${currentWeek} — MCQ Results</div>
+        <div class="mcq-final-score-ring">
+          <svg viewBox="0 0 120 120" class="mcq-score-svg">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"/>
+            <circle cx="60" cy="60" r="52" fill="none" stroke="${isPerfect?'#22c55e':isGood?'#3b82f6':'#ef4444'}" stroke-width="8" stroke-linecap="round"
+              stroke-dasharray="${Math.round(326.7*(pct/100))} 326.7"
+              transform="rotate(-90 60 60)"
+              class="mcq-score-circle"/>
+          </svg>
+          <div class="mcq-score-text">${pct}%</div>
+        </div>
+        <div class="mcq-final-stats">
+          <div class="mcq-stat"><span class="mcq-stat-num mcq-stat-correct">${mcqSessionCorrect}</span><span class="mcq-stat-label">Correct</span></div>
+          <div class="mcq-stat-divider"></div>
+          <div class="mcq-stat"><span class="mcq-stat-num mcq-stat-wrong">${totalQ - mcqSessionCorrect}</span><span class="mcq-stat-label">Wrong</span></div>
+          <div class="mcq-stat-divider"></div>
+          <div class="mcq-stat"><span class="mcq-stat-num mcq-stat-total">${totalQ}</span><span class="mcq-stat-label">Total</span></div>
+        </div>
+        <div class="mcq-final-message">${message}</div>
+        <button class="btn mcq-restart-btn" onclick="restartMCQ()">
+          🔄 Restart & Practice Again
+        </button>
+      </div>
+    </div>
+  `;
+  mcqPanel.style.display='flex';
+}
+
+function restartMCQ(){
+  // Reset session counters
+  mcqSessionCorrect=0;
+  mcqSessionTotal=0;
+  // Re-shuffle MCQs for the current week
+  const weekQs=mcqQuestions.filter(q=>q.week===currentWeek);
+  const shuffled=shuffleArray(weekQs);
+  shuffled.forEach(q=>{q._shuffledOptions=shuffleArray(q.options);});
+  shuffled.forEach((q,i)=>{q._displayNum=i+1;});
+  shuffledMCQs[currentWeek]=shuffled;
+
+  // Rebuild the MCQ panel to its original structure
+  const mcqPanel=document.getElementById('mcq-answer-panel');
+  if(mcqPanel){
+    mcqPanel.innerHTML=`
+      <div class="mcq-panel-header">
+        <span class="mcq-panel-badge">📝 One Mark Question</span>
+        <span class="mcq-panel-hint">Select the correct answer</span>
+      </div>
+      <div class="mcq-options-area" id="mcq-options-area"></div>
+      <div class="mcq-result-bar">
+        <div class="mcq-result" id="mcq-result"></div>
+      </div>
+      <div class="mcq-nav-bar">
+        <button class="btn" onclick="navMCQ(-1)">← Prev</button>
+        <button class="btn" onclick="navMCQ(1)">Next →</button>
+      </div>
+    `;
+  }
+
+  // Rebuild tabs and select first MCQ
+  buildMCQTabs(currentWeek);
+  if(shuffled.length) selectMCQ(shuffled[0]);
 }
 
 function navMCQ(dir){
