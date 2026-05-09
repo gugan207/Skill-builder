@@ -1,0 +1,208 @@
+Question No: 1
+What type of error is characterized by the program running without crashing but producing incorrect results due to flawed logic?
+
+Syntax error
+Runtime error
+Logical error --(answer)
+Semantic error
+
+Question No: 2
+Which of the following is a best practice to prevent syntax errors?
+
+Writing long functions
+Using descriptive variable names
+Avoiding the use of comments
+Consistently following indentation rules --(answer)
+
+Question No: 3
+Which of the following is NOT a valid Python variable name?
+
+variable_1
+varName
+def  --(answer)
+_myVar
+
+Question No: 4
+How do you check the Python version installed on your system?
+
+python --version --(answer)
+python get version
+python -v
+version python
+
+Question No: 5
+How do you upgrade pip to the latest version?
+
+pip upgrade
+pip install --upgrade pip --(answer)
+python upgrade pip
+pip update
+
+Question No: 6
+Where can you download the official Python installer?
+
+python-downloads.com
+pythonsite.net
+python.org  --(answer)
+python.com
+
+Question No: 7
+How do you uninstall a package named flask?
+pip delete flask
+pip erase flask
+pip remove flask
+pip uninstall flask --(answer)
+
+Question No: 8
+How can you run a Python script named app.py?
+
+start python app.py
+execute python app.py
+python app.py --(answer)
+run app.py
+
+Question No: 9
+How can you check if pip is installed?
+
+pip check
+pip --version --(answer)
+python pip
+pip test
+
+Question No: 10
+What is the file extension for Python scripts?
+
+.pys
+.pt
+.python
+.py  --(answer)
+
+Question No: 11
+What will be the output of the following code?
+x = 15
+y = 20
+if x > 10 and y < 25:
+    if x % 5 == 0:
+        print("A")
+    else:
+        print("B")
+elif x < 10:
+    print("C")
+else:
+    print("D")
+    
+A  --(answer)
+B
+C
+A B
+
+Question No: 12
+What will be the output of the following code?
+score = 85
+grade = "A" if score >= 90 else "B" if score >= 80 else "C" if score >= 70 else "D"
+result = "Pass" if grade in ["A", "B", "C"] else "Fail"
+print(grade + "-" + result)
+
+B-Fail
+A-Pass
+C-Pass
+B-Pass  --(answer)
+
+Question No: 13
+What will be the output of the following code?
+a = 12
+b = 8
+c = 15
+
+if a > b:
+    if b > c:
+        print("X")
+    elif a > c:
+        print("Y")
+    else:
+        print("Z")
+else:
+    if c > a:
+        print("P")
+    else:
+        print("Q")
+        
+Q
+P
+X
+Z  --(answer)
+
+Question No: 14
+What will be the output of the following code?
+num = 24+
+if num % 2 == 0:
+    if num % 4 == 0:
+        if num % 8 == 0:
+            print("Multiple of 8")
+        else:
+            print("Multiple of 4")
+    else:
+        print("Multiple of 2")
+else:
+    print("Odd number")
+    
+Multiple of 2
+Multiple of 1
+Multiple of 8   --(answer)
+Multiple of 4
+
+Question No: 15
+What will be the output of the following code?
+
+x = 5
+y = 10
+print(x > y)
+
+5
+10
+True
+False  --(answer)
+
+Question No: 16
+What will be the output of the following code?   
+
+print(bool([]))
+
+None
+Error
+True
+False  --(answer)
+
+Question No: 17
+Which of the following expressions will return True?
+
+bool(0)
+bool(None)
+bool("")
+bool(-5)   --(answer)
+
+Question No: 18
+Which of the following is a valid integer declaration in Python?
+
+num = "10"
+num = 10.0
+num = 10   --(answer)
+num = int("10.5")
+
+Question No: 19
+What will be the data type of x in the following code?
+
+x = 12.0
+
+int
+float   --(answer)
+complex
+bool
+
+Question No: 20
+Which of the following is a valid float value in Python?
+
+10.5   --(answer)
+10
+"10.5"
+True

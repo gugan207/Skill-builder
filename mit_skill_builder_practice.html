@@ -47,8 +47,8 @@
         <div class="q-desc" id="q-desc">Pick a question from the tabs above to begin practicing.</div>
       </div>
       <div class="q-nav">
-        <button class="btn" onclick="navQuestion(-1)">← Prev</button>
-        <button class="btn" onclick="navQuestion(1)">Next →</button>
+        <button class="btn" onclick="isMCQMode?navMCQ(-1):navQuestion(-1)">← Prev</button>
+        <button class="btn" onclick="isMCQMode?navMCQ(1):navQuestion(1)">Next →</button>
       </div>
     </div>
 
@@ -96,6 +96,15 @@
         </div>
         <div class="results-body" id="output-area">
           <div class="result-block result-neutral">Write your code and press <kbd>Ctrl+Enter</kbd> or click "Run Tests" to check.</div>
+        </div>
+      </div>
+
+      <!-- MCQ Answer Panel (shown only for MCQ questions) -->
+      <div class="mcq-answer-panel" id="mcq-answer-panel" style="display:none">
+        <div class="mcq-result" id="mcq-result"></div>
+        <div class="mcq-nav">
+          <button class="btn" onclick="navMCQ(-1)">← Prev</button>
+          <button class="btn" onclick="navMCQ(1)">Next →</button>
         </div>
       </div>
     </div>

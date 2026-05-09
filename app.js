@@ -1,4 +1,46 @@
 let currentQ=null,currentWeek=1,solved=new Set();
+let isMCQMode=false;
+let shuffledMCQs={}; // per-week shuffled MCQ arrays
+
+// ── Seeded random for per-user shuffle ──
+function seededRandom(seed){
+  let s=0;
+  for(let i=0;i<seed.length;i++){s=((s<<5)-s)+seed.charCodeAt(i);s|=0;}
+  return function(){s=Math.imul(s^(s>>>16),0x45d9f3b);s=Math.imul(s^(s>>>13),0x45d9f3b);return((s^(s>>>16))>>>0)/0xFFFFFFFF;};
+}
+
+function shuffleArray(arr,rng){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(rng()*((i)+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+// Build shuffled MCQs per week, seeded by user ID
+function buildShuffledMCQs(){
+  const seed=_userId||'guest_'+Date.now();
+  const weeks=[...new Set(mcqQuestions.map(q=>q.week))];
+  weeks.forEach(w=>{
+    const weekQs=mcqQuestions.filter(q=>q.week===w);
+    const rng=seededRandom(seed+'_mcq_w'+w);
+    // Shuffle question order
+    const shuffled=shuffleArray(weekQs,rng);
+    // Shuffle options for each question (but track correct answer)
+    shuffled.forEach(q=>{
+      const optRng=seededRandom(seed+'_opt_'+q.week+'_'+q.num);
+      q._shuffledOptions=shuffleArray(q.options,optRng);
+    });
+    // Re-number for display
+    shuffled.forEach((q,i)=>{q._displayNum=i+1;});
+    shuffledMCQs[w]=shuffled;
+  });
+}
+
+function getAllQuestionCount(){
+  return questions.length + mcqQuestions.length;
+}
 
 let monacoEditor=null;
 let _pendingCode='';
@@ -29,7 +71,10 @@ try{
   localStorage.removeItem(solvedKey());
 }
 
-function qKey(q){return`${q.week}-${q.num}`;}
+function qKey(q){
+  if(q.type==='mcq') return`mcq-${q.week}-${q.num}`;
+  return`${q.week}-${q.num}`;
+}
 
 // ── Week & Question Tabs ──
 function buildWeekTabs(){
@@ -40,18 +85,51 @@ function buildWeekTabs(){
     btn.className='week-tab'+(w===1?' active':'');
     btn.id=`week-tab-${w}`;
     btn.textContent=`Week ${w}`;
-    btn.onclick=()=>switchWeek(w);
+    btn.onclick=()=>{isMCQMode=false;switchWeek(w);};
+    container.appendChild(btn);
+  });
+  // Add MCQ tabs for each week that has MCQs
+  const mcqWeeks=[...new Set(mcqQuestions.map(q=>q.week))];
+  mcqWeeks.forEach(w=>{
+    const btn=document.createElement('button');
+    btn.className='week-tab';
+    btn.id=`week-tab-mcq-${w}`;
+    btn.textContent=`W${w} MCQ`;
+    btn.onclick=()=>{isMCQMode=true;switchToMCQWeek(w);};
     container.appendChild(btn);
   });
 }
 
 function switchWeek(w){
   currentWeek=w;
+  isMCQMode=false;
   document.querySelectorAll('.week-tab').forEach(b=>b.classList.remove('active'));
   document.getElementById(`week-tab-${w}`).classList.add('active');
   buildQuestionTabs(w);
   const first=questions.find(q=>q.week===w);
   if(first)selectQ(first);
+  // Show IDE panel elements
+  toggleIDEVisibility(true);
+}
+
+function switchToMCQWeek(w){
+  currentWeek=w;
+  isMCQMode=true;
+  document.querySelectorAll('.week-tab').forEach(b=>b.classList.remove('active'));
+  const mcqTab=document.getElementById(`week-tab-mcq-${w}`);
+  if(mcqTab) mcqTab.classList.add('active');
+  buildMCQTabs(w);
+  const mcqs=shuffledMCQs[w];
+  if(mcqs&&mcqs.length)selectMCQ(mcqs[0]);
+  // Hide IDE panel elements for MCQ
+  toggleIDEVisibility(false);
+}
+
+function toggleIDEVisibility(show){
+  const els=document.querySelectorAll('.ide-header,.editor-wrapper,.status-bar,.run-bar,.results-resizer,.results-panel,.hint-box,.solution-box');
+  els.forEach(el=>{el.style.display=show?'':'none';});
+  const mcqPanel=document.getElementById('mcq-answer-panel');
+  if(mcqPanel) mcqPanel.style.display=show?'none':'flex';
 }
 
 function buildQuestionTabs(w){
@@ -68,10 +146,26 @@ function buildQuestionTabs(w){
   });
 }
 
+function buildMCQTabs(w){
+  const container=document.getElementById('q-tabs');
+  container.innerHTML='';
+  const mcqs=shuffledMCQs[w]||[];
+  mcqs.forEach(q=>{
+    const btn=document.createElement('button');
+    btn.className='q-tab';
+    if(solved.has(qKey(q)))btn.classList.add('solved');
+    btn.id=`qtab-mcq-${q.week}-${q.num}`;
+    btn.innerHTML=`<span class="dot"></span>MCQ ${q._displayNum}`;
+    btn.onclick=()=>selectMCQ(q);
+    container.appendChild(btn);
+  });
+}
+
 function updateProgress(){
-  const pct=Math.round(solved.size/questions.length*100);
+  const total=getAllQuestionCount();
+  const pct=Math.round(solved.size/total*100);
   document.getElementById('progress-fill').style.width=pct+'%';
-  document.getElementById('progress-text').textContent=`${solved.size}/${questions.length} solved`;
+  document.getElementById('progress-text').textContent=`${solved.size}/${total} solved`;
 }
 
 // ── Select Question ──
@@ -670,6 +764,103 @@ function saveCode(){
   }
 }
 
+// ══════════════════════════════════════════════════════════════
+//  MCQ Selection & Answer Handling
+// ══════════════════════════════════════════════════════════════
+let currentMCQ=null;
+let mcqAnswered=false;
+
+function selectMCQ(q){
+  currentQ=null; // clear coding question
+  currentMCQ=q;
+  mcqAnswered=false;
+  document.querySelectorAll('.q-tab').forEach(b=>b.classList.remove('active'));
+  const tab=document.getElementById(`qtab-mcq-${q.week}-${q.num}`);
+  if(tab)tab.classList.add('active');
+
+  const content=document.getElementById('q-content');
+  let html=`<div class="q-title">MCQ ${q._displayNum}</div>`;
+  html+=`<div class="q-desc mcq-question">${escapeHtml(q.question)}</div>`;
+  html+=`<div class="mcq-options" id="mcq-options">`;
+  const opts=q._shuffledOptions||q.options;
+  opts.forEach((opt,i)=>{
+    const letter=String.fromCharCode(65+i);
+    html+=`<button class="mcq-option" id="mcq-opt-${i}" onclick="selectMCQOption(${i})">
+      <span class="mcq-letter">${letter}</span>
+      <span class="mcq-text">${escapeHtml(opt)}</span>
+    </button>`;
+  });
+  html+=`</div>`;
+  content.innerHTML=html;
+
+  // Show MCQ answer panel, hide IDE elements
+  toggleIDEVisibility(false);
+  const mcqPanel=document.getElementById('mcq-answer-panel');
+  if(mcqPanel){
+    mcqPanel.style.display='flex';
+    document.getElementById('mcq-result').innerHTML='';
+    document.getElementById('mcq-result').className='mcq-result';
+  }
+}
+
+function escapeHtml(text){
+  const div=document.createElement('div');
+  div.textContent=text;
+  return div.innerHTML.replace(/\n/g,'<br>');
+}
+
+function selectMCQOption(idx){
+  if(mcqAnswered)return;
+  mcqAnswered=true;
+  const q=currentMCQ;
+  if(!q)return;
+  const opts=q._shuffledOptions||q.options;
+  const selected=opts[idx];
+  const correct=q.answer;
+  const isCorrect=selected===correct;
+
+  // Highlight all options
+  opts.forEach((opt,i)=>{
+    const btn=document.getElementById(`mcq-opt-${i}`);
+    if(!btn)return;
+    btn.classList.add('mcq-disabled');
+    if(opt===correct){
+      btn.classList.add('mcq-correct');
+    }
+    if(i===idx&&!isCorrect){
+      btn.classList.add('mcq-wrong');
+    }
+  });
+
+  // Show result
+  const resultEl=document.getElementById('mcq-result');
+  if(isCorrect){
+    resultEl.className='mcq-result mcq-result-correct';
+    resultEl.innerHTML='🎉 Correct!';
+    // Mark as solved
+    solved.add(qKey(q));
+    try{
+      localStorage.setItem(solvedKey(),JSON.stringify([...solved]));
+    }catch(e){console.warn('Could not save progress:',e);}
+    const tab=document.getElementById(`qtab-mcq-${q.week}-${q.num}`);
+    if(tab)tab.classList.add('solved');
+    updateProgress();
+  }else{
+    resultEl.className='mcq-result mcq-result-wrong';
+    resultEl.innerHTML=`❌ Incorrect. The correct answer is: <strong>${escapeHtml(correct)}</strong>`;
+  }
+}
+
+function navMCQ(dir){
+  if(!currentMCQ)return;
+  const mcqs=shuffledMCQs[currentWeek]||[];
+  const idx=mcqs.findIndex(q=>q.num===currentMCQ.num);
+  const next=idx+dir;
+  if(next>=0&&next<mcqs.length){
+    selectMCQ(mcqs[next]);
+  }
+}
+
 // ── Init ──
 document.addEventListener('DOMContentLoaded',()=>{
   if(!_darkTheme) {
@@ -677,6 +868,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const themeBtn = document.getElementById('theme-btn');
     if(themeBtn) themeBtn.textContent='🌙';
   }
+  buildShuffledMCQs();
   initMonaco();
   buildWeekTabs();
   buildQuestionTabs(1);

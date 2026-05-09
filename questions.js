@@ -167,3 +167,109 @@ hint:"Check if char.lower() is in 'aeiou'. Print with the char in single quotes.
 tests:[{input:"j",expected:"The character 'j' is a consonant"},{input:"E",expected:"The character 'E' is a vowel"}],
 solution:`class CharacterChecker:\n    def setCharacter(self,c):\n        self.c = c\n\n    def checkVowelOrConsonant(self):\n        if self.c.lower() in "aeiou":\n            return f"The character '{self.c}' is a vowel"\n        else:\n            return f"The character '{self.c}' is a consonant"\n\nobj = CharacterChecker()\nobj.setCharacter(input())\nprint(obj.checkVowelOrConsonant())`}
 ];
+
+// ══════════════════════════════════════════════════════════════
+//  Week 1 — One Mark MCQ Questions
+//  Each question has: id, question text, options[], answer (correct option text)
+// ══════════════════════════════════════════════════════════════
+const mcqQuestions=[
+{week:1,num:1,type:'mcq',
+question:"What type of error is characterized by the program running without crashing but producing incorrect results due to flawed logic?",
+options:["Syntax error","Runtime error","Logical error","Semantic error"],
+answer:"Logical error"},
+
+{week:1,num:2,type:'mcq',
+question:"Which of the following is a best practice to prevent syntax errors?",
+options:["Writing long functions","Using descriptive variable names","Avoiding the use of comments","Consistently following indentation rules"],
+answer:"Consistently following indentation rules"},
+
+{week:1,num:3,type:'mcq',
+question:"Which of the following is NOT a valid Python variable name?",
+options:["variable_1","varName","def","_myVar"],
+answer:"def"},
+
+{week:1,num:4,type:'mcq',
+question:"How do you check the Python version installed on your system?",
+options:["python --version","python get version","python -v","version python"],
+answer:"python --version"},
+
+{week:1,num:5,type:'mcq',
+question:"How do you upgrade pip to the latest version?",
+options:["pip upgrade","pip install --upgrade pip","python upgrade pip","pip update"],
+answer:"pip install --upgrade pip"},
+
+{week:1,num:6,type:'mcq',
+question:"Where can you download the official Python installer?",
+options:["python-downloads.com","pythonsite.net","python.org","python.com"],
+answer:"python.org"},
+
+{week:1,num:7,type:'mcq',
+question:"How do you uninstall a package named flask?",
+options:["pip delete flask","pip erase flask","pip remove flask","pip uninstall flask"],
+answer:"pip uninstall flask"},
+
+{week:1,num:8,type:'mcq',
+question:"How can you run a Python script named app.py?",
+options:["start python app.py","execute python app.py","python app.py","run app.py"],
+answer:"python app.py"},
+
+{week:1,num:9,type:'mcq',
+question:"How can you check if pip is installed?",
+options:["pip check","pip --version","python pip","pip test"],
+answer:"pip --version"},
+
+{week:1,num:10,type:'mcq',
+question:"What is the file extension for Python scripts?",
+options:[".pys",".pt",".python",".py"],
+answer:".py"},
+
+{week:1,num:11,type:'mcq',
+question:"What will be the output of the following code?\n\nx = 15\ny = 20\nif x > 10 and y < 25:\n    if x % 5 == 0:\n        print(\"A\")\n    else:\n        print(\"B\")\nelif x < 10:\n    print(\"C\")\nelse:\n    print(\"D\")",
+options:["A","B","C","A B"],
+answer:"A"},
+
+{week:1,num:12,type:'mcq',
+question:"What will be the output of the following code?\n\nscore = 85\ngrade = \"A\" if score >= 90 else \"B\" if score >= 80 else \"C\" if score >= 70 else \"D\"\nresult = \"Pass\" if grade in [\"A\", \"B\", \"C\"] else \"Fail\"\nprint(grade + \"-\" + result)",
+options:["B-Fail","A-Pass","C-Pass","B-Pass"],
+answer:"B-Pass"},
+
+{week:1,num:13,type:'mcq',
+question:"What will be the output of the following code?\n\na = 12\nb = 8\nc = 15\n\nif a > b:\n    if b > c:\n        print(\"X\")\n    elif a > c:\n        print(\"Y\")\n    else:\n        print(\"Z\")\nelse:\n    if c > a:\n        print(\"P\")\n    else:\n        print(\"Q\")",
+options:["Q","P","X","Z"],
+answer:"Z"},
+
+{week:1,num:14,type:'mcq',
+question:"What will be the output of the following code?\n\nnum = 24\nif num % 2 == 0:\n    if num % 4 == 0:\n        if num % 8 == 0:\n            print(\"Multiple of 8\")\n        else:\n            print(\"Multiple of 4\")\n    else:\n        print(\"Multiple of 2\")\nelse:\n    print(\"Odd number\")",
+options:["Multiple of 2","Multiple of 1","Multiple of 8","Multiple of 4"],
+answer:"Multiple of 8"},
+
+{week:1,num:15,type:'mcq',
+question:"What will be the output of the following code?\n\nx = 5\ny = 10\nprint(x > y)",
+options:["5","10","True","False"],
+answer:"False"},
+
+{week:1,num:16,type:'mcq',
+question:"What will be the output of the following code?\n\nprint(bool([]))",
+options:["None","Error","True","False"],
+answer:"False"},
+
+{week:1,num:17,type:'mcq',
+question:"Which of the following expressions will return True?",
+options:["bool(0)","bool(None)","bool(\"\")","bool(-5)"],
+answer:"bool(-5)"},
+
+{week:1,num:18,type:'mcq',
+question:"Which of the following is a valid integer declaration in Python?",
+options:["num = \"10\"","num = 10.0","num = 10","num = int(\"10.5\")"],
+answer:"num = 10"},
+
+{week:1,num:19,type:'mcq',
+question:"What will be the data type of x in the following code?\n\nx = 12.0",
+options:["int","float","complex","bool"],
+answer:"float"},
+
+{week:1,num:20,type:'mcq',
+question:"Which of the following is a valid float value in Python?",
+options:["10.5","10","\"10.5\"","True"],
+answer:"10.5"}
+];
