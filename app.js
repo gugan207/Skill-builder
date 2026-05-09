@@ -778,20 +778,26 @@ function selectMCQ(q){
   const tab=document.getElementById(`qtab-mcq-${q.week}-${q.num}`);
   if(tab)tab.classList.add('active');
 
+  // LEFT PANEL: question text only
   const content=document.getElementById('q-content');
   let html=`<div class="q-title">MCQ ${q._displayNum}</div>`;
   html+=`<div class="q-desc mcq-question">${escapeHtml(q.question)}</div>`;
-  html+=`<div class="mcq-options" id="mcq-options">`;
-  const opts=q._shuffledOptions||q.options;
-  opts.forEach((opt,i)=>{
-    const letter=String.fromCharCode(65+i);
-    html+=`<button class="mcq-option" id="mcq-opt-${i}" onclick="selectMCQOption(${i})">
-      <span class="mcq-letter">${letter}</span>
-      <span class="mcq-text">${escapeHtml(opt)}</span>
-    </button>`;
-  });
-  html+=`</div>`;
   content.innerHTML=html;
+
+  // RIGHT PANEL: options in the mcq-options-area
+  const optArea=document.getElementById('mcq-options-area');
+  if(optArea){
+    let optHtml='';
+    const opts=q._shuffledOptions||q.options;
+    opts.forEach((opt,i)=>{
+      const letter=String.fromCharCode(65+i);
+      optHtml+=`<button class="mcq-option" id="mcq-opt-${i}" onclick="selectMCQOption(${i})">
+        <span class="mcq-letter">${letter}</span>
+        <span class="mcq-text">${escapeHtml(opt)}</span>
+      </button>`;
+    });
+    optArea.innerHTML=optHtml;
+  }
 
   // Show MCQ answer panel, hide IDE elements
   toggleIDEVisibility(false);

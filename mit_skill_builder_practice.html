@@ -101,8 +101,15 @@
 
       <!-- MCQ Answer Panel (shown only for MCQ questions) -->
       <div class="mcq-answer-panel" id="mcq-answer-panel" style="display:none">
-        <div class="mcq-result" id="mcq-result"></div>
-        <div class="mcq-nav">
+        <div class="mcq-panel-header">
+          <span class="mcq-panel-badge">📝 One Mark Question</span>
+          <span class="mcq-panel-hint">Select the correct answer</span>
+        </div>
+        <div class="mcq-options-area" id="mcq-options-area"></div>
+        <div class="mcq-result-bar">
+          <div class="mcq-result" id="mcq-result"></div>
+        </div>
+        <div class="mcq-nav-bar">
           <button class="btn" onclick="navMCQ(-1)">← Prev</button>
           <button class="btn" onclick="navMCQ(1)">Next →</button>
         </div>
