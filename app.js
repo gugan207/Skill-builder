@@ -2,35 +2,26 @@ let currentQ=null,currentWeek=1,solved=new Set();
 let isMCQMode=false;
 let shuffledMCQs={}; // per-week shuffled MCQ arrays
 
-// ── Seeded random for per-user shuffle ──
-function seededRandom(seed){
-  let s=0;
-  for(let i=0;i<seed.length;i++){s=((s<<5)-s)+seed.charCodeAt(i);s|=0;}
-  return function(){s=Math.imul(s^(s>>>16),0x45d9f3b);s=Math.imul(s^(s>>>13),0x45d9f3b);return((s^(s>>>16))>>>0)/0xFFFFFFFF;};
-}
-
-function shuffleArray(arr,rng){
+// ── Shuffle utility (Fisher-Yates) — fresh random every page load ──
+function shuffleArray(arr){
   const a=[...arr];
   for(let i=a.length-1;i>0;i--){
-    const j=Math.floor(rng()*((i)+1));
+    const j=Math.floor(Math.random()*(i+1));
     [a[i],a[j]]=[a[j],a[i]];
   }
   return a;
 }
 
-// Build shuffled MCQs per week, seeded by user ID
+// Build shuffled MCQs per week — randomized every time the page loads
 function buildShuffledMCQs(){
-  const seed=_userId||'guest_'+Date.now();
   const weeks=[...new Set(mcqQuestions.map(q=>q.week))];
   weeks.forEach(w=>{
     const weekQs=mcqQuestions.filter(q=>q.week===w);
-    const rng=seededRandom(seed+'_mcq_w'+w);
     // Shuffle question order
-    const shuffled=shuffleArray(weekQs,rng);
-    // Shuffle options for each question (but track correct answer)
+    const shuffled=shuffleArray(weekQs);
+    // Shuffle options for each question (correct answer is tracked by value, not index)
     shuffled.forEach(q=>{
-      const optRng=seededRandom(seed+'_opt_'+q.week+'_'+q.num);
-      q._shuffledOptions=shuffleArray(q.options,optRng);
+      q._shuffledOptions=shuffleArray(q.options);
     });
     // Re-number for display
     shuffled.forEach((q,i)=>{q._displayNum=i+1;});
