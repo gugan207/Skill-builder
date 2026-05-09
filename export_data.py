@@ -26,6 +26,13 @@ def fetch_table_data(table_name):
     except urllib.error.HTTPError as e:
         print(f"HTTP Error {e.code} while fetching '{table_name}'. Message: {e.reason}")
         return None
+    except urllib.error.URLError as e:
+        if 'getaddrinfo failed' in str(e.reason):
+            print(f"DNS Resolution Error: Could not connect to Supabase. Your project '{SUPABASE_URL}' might be paused or deleted.")
+            print("Please log in to the Supabase dashboard (https://supabase.com/dashboard) and restore your project.")
+        else:
+            print(f"URL Error while fetching '{table_name}': {e.reason}")
+        return None
     except Exception as e:
         print(f"Unexpected error while fetching '{table_name}': {e}")
         return None
@@ -41,7 +48,8 @@ def main():
 
     if profiles is None or progress is None:
         print("\nERROR: Failed to retrieve data from the server.")
-        print("Please ensure that you have run the RLS bypass policies in the Supabase SQL editor:")
+        print("This could be due to your Supabase project being paused/offline, or missing RLS policies.")
+        print("If your project is active, please ensure you have run the RLS bypass policies in the Supabase SQL editor:")
         print("  CREATE POLICY \"Allow read all profiles\" ON public.profiles FOR SELECT USING (true);")
         print("  CREATE POLICY \"Allow read all progress\" ON public.user_progress FOR SELECT USING (true);")
         sys.exit(1)
