@@ -374,5 +374,264 @@ answer:"15"},
 {week:2,num:20,type:'mcq',
 question:"What will be the output of the following code?\n\nmultiply = lambda x: x * 3\nresult = multiply(5)\nprint(result)",
 options:["18","9","12","15"],
-answer:"15"}
+answer:"15"},
+
+// ══════════════════════════════════════════════════════════════
+//  Week 3 — One Mark MCQ Questions (Strings)
+// ══════════════════════════════════════════════════════════════
+{week:3,num:1,type:'mcq',
+question:"What is the output of the following Python code?\n\nname = \"John\"\nage = 25\nmessage = \"My name is %s and I am %d years old.\" % (name, age)\nprint(message)",
+options:["My name is John and I am 25 years old.","My name is John and I am years old.","My name is %s and I am %d years old.","My name is %d and I am %s years old."],
+answer:"My name is John and I am 25 years old."},
+
+{week:3,num:2,type:'mcq',
+question:"Which of the following is a valid way to use the '%' operator to concatenate strings in Python?",
+options:["%s.join(string1, string2)","string1 * %s * string2","\"%s %s\" % (string1, string2)","string1 %s string2"],
+answer:"\"%s %s\" % (string1, string2)"},
+
+{week:3,num:3,type:'mcq',
+question:"What is the output of the following Python code?\n\nword = \"programming\"\nanswer = word.index(\"gram\")\nprint(answer)",
+options:["2","5","3","8"],
+answer:"3"},
+
+{week:3,num:4,type:'mcq',
+question:"What is the output of the following Python code?\n\ntext = \"Python\"\nresult = text.center(10, \"*\")\nprint(result)",
+options:["\"Python\"","*Python","**Python**","Python****"],
+answer:"**Python**"},
+
+{week:3,num:5,type:'mcq',
+question:"What is the output of the following Python code?\n\nstring1 = \"Hello\"\nstring2 = \"World\"\nresult = string1 + string2\nprint(result)",
+options:["Hello World","HelloWorld","World Hello","WorldHello"],
+answer:"HelloWorld"},
+
+{week:3,num:6,type:'mcq',
+question:"What is the output of the following Python code?\n\ntext = \"python programming\"\nresult = text.capitalize()\nprint(result)",
+options:["Python programming","Python Programming","python Programming","python programming"],
+answer:"Python programming"},
+
+{week:3,num:7,type:'mcq',
+question:"What is the output of the following Python code?\n\ntext = \" Python \"\nanswer = text.strip()\nprint(answer)",
+options:["Python","\"Python \"","\" Python\"","\" Python \""],
+answer:"Python"},
+
+{week:3,num:8,type:'mcq',
+question:"What is the output of the following Python code?\n\nword = \"Python\"\nresult = word[::-1]\nprint(result)",
+options:["Python","nohtyP","onhtyP","nohtyp"],
+answer:"nohtyP"},
+
+{week:3,num:9,type:'mcq',
+question:"What is the output of the following Python code?\n\nsentence = \"Python is a powerful programming language.\"\ncount = sentence.count(\"o\")\nprint(count)",
+options:["4","2","3","5"],
+answer:"3"},
+
+{week:3,num:10,type:'mcq',
+question:"What is the output of the following Python code?\n\ntext = \"Python is easy.\"\nresult = len(text.split())\nprint(result)",
+options:["3","4","1","2"],
+answer:"3"},
+
+{week:3,num:11,type:'mcq',
+question:"What is the output of the following Python code?\n\ntxt = \"Hello, welcome to my world.\"\nx = txt.index(\"welcome\")\nprint(x)",
+options:["3","4","8","7"],
+answer:"7"},
+
+{week:3,num:12,type:'mcq',
+question:"What is the output of the following Python code?\n\ntext = \"Super hero\"\nx = text.index(\"e\")\nprint(x)",
+options:["3","4","8","7"],
+answer:"3"},
+
+{week:3,num:13,type:'mcq',
+question:"What is the output of the following Python code?\n\ntxt = \"My Classroom\"\nprint(txt.find(\"o\"))\nprint(txt.index(\"o\"))",
+options:["9\n9","8\n8","7\n7","Compile Time Error"],
+answer:"9\n9"},
+
+{week:3,num:14,type:'mcq',
+question:"What is the output of the following Python code?\n\na = \"Hello\"\nb = \"World\"\nc = a + \" \" + b\nprint(c)",
+options:["Hello World","HelloWorld","Hello\nWorld","Compile Time Error"],
+answer:"Hello World"},
+
+{week:3,num:15,type:'mcq',
+question:"What is the output of the following Python code?\n\nb = \"Projects!\"\nprint(b[2:5])",
+options:["oje","roj","jec","Compile Time Error"],
+answer:"oje"},
+
+{week:3,num:16,type:'mcq',
+question:"What is the output of the following Python code?\n\nmessage = \"Learn Programming\"\na = message.index(\"e\", 1, 10)\nprint(a)",
+options:["3","4","1","2"],
+answer:"2"},
+
+{week:3,num:17,type:'mcq',
+question:"What is the output of the following Python code?\n\nb = \"debugger Compiler\"\nprint(b[-5:-2])",
+options:["pil","omp","mpi","Compile Time Error"],
+answer:"pil"},
+
+{week:3,num:18,type:'mcq',
+question:"What is the first step in solving a problem using a computer?",
+options:["Writing the code","Defining the problem","Testing the program","Choosing a programming language"],
+answer:"Defining the problem"},
+
+{week:3,num:19,type:'mcq',
+question:"Which of the following best describes the concept of \"encapsulation\" in program design?",
+options:["Separating the user interface from the business logic","Hiding the internal state of an object and requiring all interaction to be performed through methods","Breaking a program into modules","Using comments to explain code functionality"],
+answer:"Hiding the internal state of an object and requiring all interaction to be performed through methods"},
+
+{week:3,num:20,type:'mcq',
+question:"What is the main purpose of using a \"test case\" in software development?",
+options:["To write documentation","To specify the requirements","To verify that a part of the program works as intended","To improve the program's performance"],
+answer:"To verify that a part of the program works as intended"},
+
+// ══════════════════════════════════════════════════════════════
+//  Week 4 — One Mark MCQ Questions (Dictionary, Sets, Tuple)
+// ══════════════════════════════════════════════════════════════
+{week:4,num:1,type:'mcq',
+question:"What will be the output of the following code?\n\nmy_dict = {'a': 1, 'b': 2, 'c': 3}\nmy_dict['d'] = 4\nprint(my_dict)",
+options:["{'a': 1, 'b': 2, 'c': 3, 'd': 4}","{'a': 1, 'b': 2, 'c': 3}","{'a': 1, 'b': 2, 'c': 3, 'd': '4'}","KeyError"],
+answer:"{'a': 1, 'b': 2, 'c': 3, 'd': 4}"},
+
+{week:4,num:2,type:'mcq',
+question:"What will be the output of the following code?\n\nmy_dict = {'a': 1, 'b': 2, 'c': 3}\nmy_dict.update({'a': 4})\nprint(my_dict)",
+options:["{'a': 4}","{'a': 1, 'b': 2, 'c': 3}","{'a': 4, 'b': 2, 'c': 3}","KeyError"],
+answer:"{'a': 4, 'b': 2, 'c': 3}"},
+
+{week:4,num:3,type:'mcq',
+question:"What will be the output of the following code?\n\nmy_dict = {'a': 1, 'b': 2, 'c': 3}\nprint(list(my_dict.keys()))",
+options:["['a', 'b', 'c']","['a', '1', 'b', '2']","['a', 'b', 'c', '1']","KeyError"],
+answer:"['a', 'b', 'c']"},
+
+{week:4,num:4,type:'mcq',
+question:"What will be the output of the following code?\n\nmy_dict = {'a': 1, 'b': 2, 'c': 3}\nmy_dict['d'] = my_dict.get('e', 5)\nprint(my_dict)",
+options:["{'a': 1, 'b': 2, 'c': 3, 'd': 5}","{'a': 1, 'b': 2, 'c': 3, 'd': None}","{'a': 1, 'b': 2, 'c': 3, 'd': 5, 'e': 5}","{'a': 1, 'b': 2, 'c': 3, 'd': 4}"],
+answer:"{'a': 1, 'b': 2, 'c': 3, 'd': 5}"},
+
+{week:4,num:5,type:'mcq',
+question:"What will be the output of the following code?\n\nset1 = {1, 2, 3, 4}\nset2 = {3, 4, 5, 6}\nset3 = set1.intersection(set2)\nprint(sorted(set3))",
+options:["[5, 6]","[1, 2]","[1, 2, 3, 4]","[3, 4]"],
+answer:"[3, 4]"},
+
+{week:4,num:6,type:'mcq',
+question:"What will be the output of the following code?\n\nset1 = {1, 2, 3, 4}\nset2 = {2, 3, 4, 5}\nset1.symmetric_difference_update(set2)\nprint(sorted(set1))",
+options:["[5, 6]","[1, 5, 6]","[1, 2, 5]","[1, 5]"],
+answer:"[1, 5]"},
+
+{week:4,num:7,type:'mcq',
+question:"What will be the output of the following code?\n\nset1 = {1, 2, 3, 4, 5}\nset2 = {3, 4, 5, 6, 7}\nset3 = set1.isdisjoint(set2)\nprint(set3)",
+options:["KeyError","None","True","False"],
+answer:"False"},
+
+{week:4,num:8,type:'mcq',
+question:"What will be the output of the following code?\n\nmy_set = {10, 20, 30, 40}\nmy_set.discard(25)\nmy_set.add(15)\nprint(sorted(my_set))",
+options:["[10, 15, 20, 30, 40]","[10, 15, 20, 25, 30, 40]","[25, 30, 40]","[10, 20, 30, 40]"],
+answer:"[10, 15, 20, 30, 40]"},
+
+{week:4,num:9,type:'mcq',
+question:"What will be the output of the following code?\n\nmy_set = {1, 3, 5, 7}\nmy_set.update([2, 6])\nprint(sorted(my_set))",
+options:["[1, 2, 3, 4, 5, 6, 7]","[1, 3, 5, 7, 8, 9]","[1, 2, 3, 5, 6, 7]","[1, 2, 3, 5]"],
+answer:"[1, 2, 3, 5, 6, 7]"},
+
+{week:4,num:10,type:'mcq',
+question:"What will be the output of the following code?\n\nmy_dict = {'a': 1, 'b': 2, 'c': 3}\nfor key, value in my_dict.items():\n    print(key, value)",
+options:["('a', 1)\n('b', 2)\n('c', 3)","a 1\nb 2\nc 3","a b c 1 2 3","a 1\nb 2\nc 3\n1 2 3"],
+answer:"a 1\nb 2\nc 3"},
+
+{week:4,num:11,type:'mcq',
+question:"What will be the output for the following code?\n\na=(1,2,3)\nb=('A','B','C')\nc=zip(a,b)\nprint(tuple(c))",
+options:["((1, 'A'), (2, 'B'), (3, 'C'))","((1,2,3),('A','B','C'))","(('A', 1), ('B', 2), ('C', 3))","None of the mentioned options"],
+answer:"((1, 'A'), (2, 'B'), (3, 'C'))"},
+
+{week:4,num:12,type:'mcq',
+question:"What will be the output of the following code?\n\na=(1,2,3,4)\nprint(sum(a,3))",
+options:["Too many arguments for sum() method","The method sum() doesn't exist for tuples","12","13"],
+answer:"13"},
+
+{week:4,num:13,type:'mcq',
+question:"Which of the following is a Python tuple?",
+options:["{1, 2, 3}","[1, 2, 3]","(1, 2, 3)","{ }"],
+answer:"(1, 2, 3)"},
+
+{week:4,num:14,type:'mcq',
+question:"Which of the following statements is used to create an empty tuple?",
+options:["{ }","set()","[ ]","( )"],
+answer:"( )"},
+
+{week:4,num:15,type:'mcq',
+question:"What will be the output of the following code?\n\na = (1, 2, 3)\na[1] = 4\nprint(a)",
+options:["Error: 'tuple' object does not support item assignment","(1, 2, 4)","(1, 2, 3, 4)","(1, 4, 3)"],
+answer:"Error: 'tuple' object does not support item assignment"},
+
+{week:4,num:16,type:'mcq',
+question:"Suppose t = (1, 2, 4, 3), which of the following is incorrect?",
+options:["print(t[3])","t[3] = 45","print(max(t))","print(len(t))"],
+answer:"t[3] = 45"},
+
+{week:4,num:17,type:'mcq',
+question:"What will be the output of the following code?\n\na=(4,5,6)\nb=('D','E','F')\nc=zip(a,b)\nprint(tuple(c))",
+options:["('D',4),('E',5),('F',6)","(4,5,6),('D','E','F')","Error","((4, 'D'), (5, 'E'), (6, 'F'))"],
+answer:"((4, 'D'), (5, 'E'), (6, 'F'))"},
+
+{week:4,num:18,type:'mcq',
+question:"Predict the output for the following code:\n\na=(1,2,3,4)\nprint(a[1:-1])",
+options:["Error, tuple slicing doesn't exist","[2, 3]","(2, 3, 4)","(2, 3)"],
+answer:"(2, 3)"},
+
+{week:4,num:19,type:'mcq',
+question:"What is the output for the following code?\n\na=(\"Check\",)*3\nprint(a)",
+options:["('Check', 'Check', 'Check')","* Operator not valid for tuples","CheckCheckCheck","Syntax error"],
+answer:"('Check', 'Check', 'Check')"},
+
+{week:4,num:20,type:'mcq',
+question:"What is the output of the following code?\n\na=(1,2,(4,5))\nb=(1,2,(3,4))\nprint(a<b)",
+options:["False","True","Error, < operator is not valid for tuples","Error, < operator is valid for tuples but not if there are sub-tuples"],
+answer:"False"},
+
+// ══════════════════════════════════════════════════════════════
+//  Week 5 — One Mark MCQ Questions (Classes & Objects)
+// ══════════════════════════════════════════════════════════════
+{week:5,num:1,type:'mcq',
+question:"What will be the output of the following code?\n\nclass Car:\n    def __init__(self, model, year):\n        self.model = model\n        self.year = year\n    def display_info(self):\n        print(f\"Model: {self.model}, Year: {self.year}\")\ncar = Car(\"Tesla\", 2020)\ncar.display_info()",
+options:["Model: Tesla, Year: 2020","NameError: name 'car' is not defined","AttributeError: 'NoneType' object has no attribute 'display_info'","None"],
+answer:"Model: Tesla, Year: 2020"},
+
+{week:5,num:2,type:'mcq',
+question:"What will be the output of the following code?\n\nclass Book:\n    def __init__(self, title, author):\n        self.title = title\n        self.author = author\nbook1 = Book(\"1984\", \"George Orwell\")\nbook2 = Book(\"Brave New World\", \"Aldous Huxley\")\nprint(book1.title + \" by \" + book2.author)",
+options:["1984 by George Orwell","Brave New World by Aldous Huxley","Brave New World by George Orwell","1984 by Aldous Huxley"],
+answer:"1984 by Aldous Huxley"},
+
+{week:5,num:3,type:'mcq',
+question:"What will be the output of the following code?\n\nclass Animal:\n    def __init__(self, name):\n        self.name = name\n    def speak(self):\n        print(f\"{self.name} says Hello\")\ndog = Animal(\"Dog\")\ncat = Animal(\"Cat\")\ndog.speak()\ncat.speak()",
+options:["NoneCat says Hello","Dog says HelloNone","Dog says Hello\nCat says Hello","Dog says Hello Cat says Hello"],
+answer:"Dog says Hello\nCat says Hello"},
+
+{week:5,num:4,type:'mcq',
+question:"What will be the output of the following code?\n\nclass Person:\n    def __init__(self, name, age):\n        self.name = name\n        self.age = age\np1 = Person(\"John\", 25)\np2 = Person(\"John\", 25)\nprint(p1 == p2)",
+options:["0","1","False","True"],
+answer:"False"},
+
+{week:5,num:5,type:'mcq',
+question:"What will be the output of the following code?\n\nclass Circle:\n    def __init__(self, radius):\n        self.radius = radius\n    def __del__(self):\n        print(\"Circle object deleted\")\ncircle = Circle(7)\ndel circle",
+options:["Circle","Circle object created","Circle object deleted","None"],
+answer:"Circle object deleted"},
+
+{week:5,num:6,type:'mcq',
+question:"What will be the output of the following code?\n\nclass Rectangle:\n    def __init__(self, length, width):\n        self.length = length\n        self.width = width\n    def area(self):\n        return self.length * self.width\nrect = Rectangle(5, 10)\nprint(rect.area())",
+options:["5","15","10","50"],
+answer:"50"},
+
+{week:5,num:7,type:'mcq',
+question:"What will be the output of the following code?\n\nclass Shape:\n    def __init__(self):\n        self.type = \"Shape\"\nclass Square(Shape):\n    def __init__(self):\n        super().__init__()\n        self.type = \"Square\"\nsquare = Square()\nprint(square.type)",
+options:["Shape","Square","Error","None"],
+answer:"Square"},
+
+{week:5,num:8,type:'mcq',
+question:"What will be the output of the following code?\n\nclass Counter:\n    def __init__(self):\n        self.value = 0\n    def increment(self):\n        self.value += 1\n    def reset(self):\n        self.value = 0\ncounter = Counter()\ncounter.increment()\ncounter.increment()\ncounter.increment()\ncounter.reset()\nprint(counter.value)",
+options:["0","2","1","None"],
+answer:"0"},
+
+{week:5,num:9,type:'mcq',
+question:"What will be the output of the following code?\n\nclass Student:\n    def __init__(self, name, marks):\n        self.name = name\n        self.marks = marks\n    def display(self):\n        print(f\"{self.name} scored {self.marks}\")\ns = Student(\"Alice\", 85)\ns.display()",
+options:["scored 85","Alice scored None","Alice scored 85","Alice"],
+answer:"Alice scored 85"},
+
+{week:5,num:10,type:'mcq',
+question:"What will be the output of the following code?\n\nclass Employee:\n    salary = 50000\n    def display(self):\n        print(self.salary)\ne = Employee()\ne.salary = 60000\ne.display()",
+options:["110000","60000","50000","Error"],
+answer:"60000"}
 ];

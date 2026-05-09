@@ -70,23 +70,15 @@ function qKey(q){
 // ── Week & Question Tabs ──
 function buildWeekTabs(){
   const container=document.getElementById('week-tabs');
-  const weeks=[...new Set(questions.map(q=>q.week))];
-  weeks.forEach(w=>{
+  // Collect all weeks from both coding and MCQ questions
+  const allWeeks=[...new Set([...questions.map(q=>q.week),...mcqQuestions.map(q=>q.week)])];
+  allWeeks.sort((a,b)=>a-b);
+  allWeeks.forEach(w=>{
     const btn=document.createElement('button');
     btn.className='week-tab'+(w===1?' active':'');
     btn.id=`week-tab-${w}`;
     btn.textContent=`Week ${w}`;
-    btn.onclick=()=>{isMCQMode=false;switchWeek(w);};
-    container.appendChild(btn);
-  });
-  // Add MCQ tabs for each week that has MCQs
-  const mcqWeeks=[...new Set(mcqQuestions.map(q=>q.week))];
-  mcqWeeks.forEach(w=>{
-    const btn=document.createElement('button');
-    btn.className='week-tab';
-    btn.id=`week-tab-mcq-${w}`;
-    btn.textContent=`W${w} MCQ`;
-    btn.onclick=()=>{isMCQMode=true;switchToMCQWeek(w);};
+    btn.onclick=()=>{switchWeek(w);};
     container.appendChild(btn);
   });
 }
@@ -94,29 +86,24 @@ function buildWeekTabs(){
 function switchWeek(w){
   currentWeek=w;
   isMCQMode=false;
-  document.querySelectorAll('.week-tab').forEach(b=>b.classList.remove('active'));
-  document.getElementById(`week-tab-${w}`).classList.add('active');
-  buildQuestionTabs(w);
-  const first=questions.find(q=>q.week===w);
-  if(first)selectQ(first);
-  // Show IDE panel elements
-  toggleIDEVisibility(true);
-}
-
-function switchToMCQWeek(w){
-  currentWeek=w;
-  isMCQMode=true;
-  // Reset session score for new week
+  // Reset MCQ session score for new week
   mcqSessionCorrect=0;
   mcqSessionTotal=0;
   document.querySelectorAll('.week-tab').forEach(b=>b.classList.remove('active'));
-  const mcqTab=document.getElementById(`week-tab-mcq-${w}`);
-  if(mcqTab) mcqTab.classList.add('active');
-  buildMCQTabs(w);
-  const mcqs=shuffledMCQs[w];
-  if(mcqs&&mcqs.length)selectMCQ(mcqs[0]);
-  // Hide IDE panel elements for MCQ
-  toggleIDEVisibility(false);
+  const tab=document.getElementById(`week-tab-${w}`);
+  if(tab) tab.classList.add('active');
+  buildQuestionTabs(w);
+  const first=questions.find(q=>q.week===w);
+  if(first){
+    selectQ(first);
+  }else{
+    // Week has only MCQs, no coding questions
+    const mcqs=shuffledMCQs[w];
+    if(mcqs&&mcqs.length){
+      isMCQMode=true;
+      selectMCQ(mcqs[0]);
+    }
+  }
 }
 
 function toggleIDEVisibility(show){
@@ -129,30 +116,34 @@ function toggleIDEVisibility(show){
 function buildQuestionTabs(w){
   const container=document.getElementById('q-tabs');
   container.innerHTML='';
+  // Coding question tabs
   questions.filter(q=>q.week===w).forEach(q=>{
     const btn=document.createElement('button');
     btn.className='q-tab';
     if(solved.has(qKey(q)))btn.classList.add('solved');
     btn.id=`qtab-${q.week}-${q.num}`;
     btn.innerHTML=`<span class="dot"></span>Q${q.num} · ${q.title}`;
-    btn.onclick=()=>selectQ(q);
+    btn.onclick=()=>{isMCQMode=false;selectQ(q);};
     container.appendChild(btn);
   });
-}
-
-function buildMCQTabs(w){
-  const container=document.getElementById('q-tabs');
-  container.innerHTML='';
+  // MCQ tabs (appended after coding questions within the same week)
   const mcqs=shuffledMCQs[w]||[];
-  mcqs.forEach(q=>{
-    const btn=document.createElement('button');
-    btn.className='q-tab';
-    if(solved.has(qKey(q)))btn.classList.add('solved');
-    btn.id=`qtab-mcq-${q.week}-${q.num}`;
-    btn.innerHTML=`<span class="dot"></span>MCQ ${q._displayNum}`;
-    btn.onclick=()=>selectMCQ(q);
-    container.appendChild(btn);
-  });
+  if(mcqs.length){
+    // Add a visual separator
+    const sep=document.createElement('span');
+    sep.className='q-tab-separator';
+    sep.textContent='MCQ';
+    container.appendChild(sep);
+    mcqs.forEach(q=>{
+      const btn=document.createElement('button');
+      btn.className='q-tab q-tab-mcq';
+      if(solved.has(qKey(q)))btn.classList.add('solved');
+      btn.id=`qtab-mcq-${q.week}-${q.num}`;
+      btn.innerHTML=`<span class="dot"></span>MCQ ${q._displayNum}`;
+      btn.onclick=()=>{isMCQMode=true;selectMCQ(q);};
+      container.appendChild(btn);
+    });
+  }
 }
 
 function updateProgress(){
@@ -486,6 +477,10 @@ async function runTests(){
 
 // ── Navigation ──
 function navQuestion(dir){
+  if(isMCQMode){
+    navMCQ(dir);
+    return;
+  }
   if(!currentQ)return;
   const weekQs=questions.filter(q=>q.week===currentWeek);
   const idx=weekQs.findIndex(q=>q.num===currentQ.num);
@@ -493,13 +488,14 @@ function navQuestion(dir){
   if(next>=0&&next<weekQs.length){
     selectQ(weekQs[next]);
   }else if(dir>0){
-    const nextWeek=currentWeek+1;
-    const nq=questions.find(q=>q.week===nextWeek);
-    if(nq){switchWeek(nextWeek);selectQ(nq);}
+    // At end of coding questions — jump to MCQ 1 if available
+    const mcqs=shuffledMCQs[currentWeek]||[];
+    if(mcqs.length){
+      isMCQMode=true;
+      selectMCQ(mcqs[0]);
+    }
   }else{
-    const prevWeek=currentWeek-1;
-    const pqs=questions.filter(q=>q.week===prevWeek);
-    if(pqs.length){switchWeek(prevWeek);selectQ(pqs[pqs.length-1]);}
+    // At beginning — no previous week jump for now
   }
 }
 
@@ -783,7 +779,26 @@ function selectMCQ(q){
   html+=`<div class="q-desc mcq-question">${escapeHtml(q.question)}</div>`;
   content.innerHTML=html;
 
-  // RIGHT PANEL: options in the mcq-options-area
+  // RIGHT PANEL: ensure the MCQ panel structure exists (it may have been replaced by final result)
+  const mcqPanel=document.getElementById('mcq-answer-panel');
+  if(mcqPanel && !document.getElementById('mcq-options-area')){
+    mcqPanel.innerHTML=`
+      <div class="mcq-panel-header">
+        <span class="mcq-panel-badge">📝 One Mark Question</span>
+        <span class="mcq-panel-hint">Select the correct answer</span>
+      </div>
+      <div class="mcq-options-area" id="mcq-options-area"></div>
+      <div class="mcq-result-bar">
+        <div class="mcq-result" id="mcq-result"></div>
+      </div>
+      <div class="mcq-nav-bar">
+        <button class="btn" onclick="navMCQ(-1)">← Prev</button>
+        <button class="btn" onclick="navMCQ(1)">Next →</button>
+      </div>
+    `;
+  }
+
+  // Populate options in the mcq-options-area
   const optArea=document.getElementById('mcq-options-area');
   if(optArea){
     let optHtml='';
@@ -800,11 +815,13 @@ function selectMCQ(q){
 
   // Show MCQ answer panel, hide IDE elements
   toggleIDEVisibility(false);
-  const mcqPanel=document.getElementById('mcq-answer-panel');
   if(mcqPanel){
     mcqPanel.style.display='flex';
-    document.getElementById('mcq-result').innerHTML='';
-    document.getElementById('mcq-result').className='mcq-result';
+    const resultEl=document.getElementById('mcq-result');
+    if(resultEl){
+      resultEl.innerHTML='';
+      resultEl.className='mcq-result';
+    }
   }
 }
 
@@ -969,7 +986,7 @@ function restartMCQ(){
   }
 
   // Rebuild tabs and select first MCQ
-  buildMCQTabs(currentWeek);
+  buildQuestionTabs(currentWeek);
   if(shuffled.length) selectMCQ(shuffled[0]);
 }
 
@@ -980,6 +997,13 @@ function navMCQ(dir){
   const next=idx+dir;
   if(next>=0&&next<mcqs.length){
     selectMCQ(mcqs[next]);
+  }else if(dir<0&&idx===0){
+    // At first MCQ, pressing Prev goes back to last coding question
+    const weekQs=questions.filter(q=>q.week===currentWeek);
+    if(weekQs.length){
+      isMCQMode=false;
+      selectQ(weekQs[weekQs.length-1]);
+    }
   }
 }
 
