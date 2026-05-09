@@ -57,10 +57,21 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .q-tab.active{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(59,130,246,.3)}
 .q-tab .dot{width:7px;height:7px;border-radius:50%;border:1.5px solid var(--text3);flex-shrink:0;transition:all .2s}
 .q-tab.solved .dot{background:var(--green);border-color:var(--green);box-shadow:0 0 6px rgba(34,197,94,.4)}
-.q-tab-separator{display:flex;align-items:center;padding:4px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--accent2);background:var(--accent-glow);border-radius:20px;white-space:nowrap;flex-shrink:0;border:1px solid rgba(59,130,246,.2);margin:0 4px}
-.q-tab-mcq{color:var(--purple)}
-.q-tab-mcq.active{background:linear-gradient(135deg,var(--purple),var(--accent));color:#fff;box-shadow:0 2px 8px rgba(167,139,250,.3)}
-.q-tab-mcq .dot{border-color:var(--purple)}
+
+/* MCQ single entry button */
+.q-tab-mcq-entry{margin-top:6px;background:linear-gradient(135deg,rgba(167,139,250,.12),rgba(59,130,246,.10))!important;border:1px solid rgba(167,139,250,.25)!important;border-radius:8px!important;padding:8px 14px!important;gap:8px!important;color:var(--purple)!important;font-weight:600!important;transition:all .3s ease!important}
+.q-tab-mcq-entry:hover{background:linear-gradient(135deg,rgba(167,139,250,.22),rgba(59,130,246,.18))!important;border-color:rgba(167,139,250,.45)!important;transform:translateY(-1px);box-shadow:0 4px 12px rgba(167,139,250,.15)}
+.q-tab-mcq-entry.active{background:linear-gradient(135deg,var(--purple),var(--accent))!important;color:#fff!important;border-color:transparent!important;box-shadow:0 4px 16px rgba(167,139,250,.35)}
+.mcq-entry-icon{font-size:14px;flex-shrink:0}
+.mcq-entry-badge{margin-left:auto;font-size:10px;font-weight:700;background:rgba(255,255,255,.15);padding:2px 8px;border-radius:10px;letter-spacing:.03em}
+.q-tab-mcq-entry:not(.active) .mcq-entry-badge{background:rgba(167,139,250,.15);color:var(--purple)}
+
+/* MCQ progress bar */
+.mcq-progress-bar-wrap{width:100%;height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;flex-shrink:0}
+.mcq-progress-bar{height:100%;background:linear-gradient(90deg,var(--purple),var(--accent));border-radius:2px;transition:width .4s ease;width:0}
+
+/* MCQ progress badge in title */
+.mcq-progress-badge{font-size:13px;font-weight:400;color:var(--text3);margin-left:4px}
 
 /* Question content */
 .q-content{flex:1;overflow-y:auto;padding:24px}

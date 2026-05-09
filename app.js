@@ -126,23 +126,21 @@ function buildQuestionTabs(w){
     btn.onclick=()=>{isMCQMode=false;selectQ(q);};
     container.appendChild(btn);
   });
-  // MCQ tabs (appended after coding questions within the same week)
+  // Single MCQ entry point (instead of 20 individual tabs)
   const mcqs=shuffledMCQs[w]||[];
   if(mcqs.length){
-    // Add a visual separator
-    const sep=document.createElement('span');
-    sep.className='q-tab-separator';
-    sep.textContent='MCQ';
-    container.appendChild(sep);
-    mcqs.forEach(q=>{
-      const btn=document.createElement('button');
-      btn.className='q-tab q-tab-mcq';
-      if(solved.has(qKey(q)))btn.classList.add('solved');
-      btn.id=`qtab-mcq-${q.week}-${q.num}`;
-      btn.innerHTML=`<span class="dot"></span>MCQ ${q._displayNum}`;
-      btn.onclick=()=>{isMCQMode=true;selectMCQ(q);};
-      container.appendChild(btn);
-    });
+    const mcqSolved=mcqs.filter(q=>solved.has(qKey(q))).length;
+    const btn=document.createElement('button');
+    btn.className='q-tab q-tab-mcq-entry'+(isMCQMode?' active':'');
+    btn.id=`qtab-mcq-entry-${w}`;
+    btn.innerHTML=`<span class="mcq-entry-icon">📝</span>MCQ Practice<span class="mcq-entry-badge">${mcqSolved}/${mcqs.length}</span>`;
+    btn.onclick=()=>{
+      isMCQMode=true;
+      mcqSessionCorrect=0;
+      mcqSessionTotal=0;
+      selectMCQ(mcqs[0]);
+    };
+    container.appendChild(btn);
   }
 }
 
@@ -769,13 +767,21 @@ function selectMCQ(q){
   currentQ=null; // clear coding question
   currentMCQ=q;
   mcqAnswered=false;
-  document.querySelectorAll('.q-tab').forEach(b=>b.classList.remove('active'));
-  const tab=document.getElementById(`qtab-mcq-${q.week}-${q.num}`);
-  if(tab)tab.classList.add('active');
 
-  // LEFT PANEL: question text only
+  // Highlight the single MCQ entry button (not individual tabs)
+  document.querySelectorAll('.q-tab').forEach(b=>b.classList.remove('active'));
+  const entryTab=document.getElementById(`qtab-mcq-entry-${q.week}`);
+  if(entryTab) entryTab.classList.add('active');
+
+  // Calculate progress
+  const mcqs=shuffledMCQs[currentWeek]||[];
+  const currentIdx=mcqs.findIndex(m=>m.num===q.num);
+  const qNumber=currentIdx+1;
+  const totalMcqs=mcqs.length;
+
+  // LEFT PANEL: question text with progress counter
   const content=document.getElementById('q-content');
-  let html=`<div class="q-title">MCQ ${q._displayNum}</div>`;
+  let html=`<div class="q-title">MCQ ${qNumber} <span class="mcq-progress-badge">of ${totalMcqs}</span></div>`;
   html+=`<div class="q-desc mcq-question">${escapeHtml(q.question)}</div>`;
   content.innerHTML=html;
 
@@ -787,6 +793,7 @@ function selectMCQ(q){
         <span class="mcq-panel-badge">📝 One Mark Question</span>
         <span class="mcq-panel-hint">Select the correct answer</span>
       </div>
+      <div class="mcq-progress-bar-wrap"><div class="mcq-progress-bar" id="mcq-progress-bar"></div></div>
       <div class="mcq-options-area" id="mcq-options-area"></div>
       <div class="mcq-result-bar">
         <div class="mcq-result" id="mcq-result"></div>
@@ -796,6 +803,18 @@ function selectMCQ(q){
         <button class="btn" onclick="navMCQ(1)">Next →</button>
       </div>
     `;
+  }
+
+  // Update progress bar
+  const progressBar=document.getElementById('mcq-progress-bar');
+  if(progressBar){
+    progressBar.style.width=`${Math.round((qNumber/totalMcqs)*100)}%`;
+  }
+
+  // Update header with question counter
+  const headerBadge=mcqPanel?.querySelector('.mcq-panel-badge');
+  if(headerBadge){
+    headerBadge.textContent=`📝 Question ${qNumber} of ${totalMcqs}`;
   }
 
   // Populate options in the mcq-options-area
@@ -974,6 +993,7 @@ function restartMCQ(){
         <span class="mcq-panel-badge">📝 One Mark Question</span>
         <span class="mcq-panel-hint">Select the correct answer</span>
       </div>
+      <div class="mcq-progress-bar-wrap"><div class="mcq-progress-bar" id="mcq-progress-bar"></div></div>
       <div class="mcq-options-area" id="mcq-options-area"></div>
       <div class="mcq-result-bar">
         <div class="mcq-result" id="mcq-result"></div>
