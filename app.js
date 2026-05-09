@@ -676,13 +676,40 @@ function initMonaco(){
     const wrapper = document.getElementById('editor-wrapper');
     wrapper.innerHTML = '';
     
+    monaco.editor.defineTheme('advanced-ide-dark', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [
+        { token: 'keyword', foreground: '569cd6' },
+        { token: 'string', foreground: 'ce9178' },
+        { token: 'string.escape', foreground: 'd7ba7d' },
+        { token: 'number', foreground: 'b5cea8' },
+        { token: 'identifier', foreground: '9cdcfe' },
+        { token: 'type', foreground: '4ec9b0' },
+        { token: 'class.name', foreground: '4ec9b0' },
+        { token: 'function', foreground: 'dcdcaa' },
+        { token: 'comment', foreground: '6a9955', fontStyle: 'italic' },
+        { token: 'operator', foreground: 'd4d4d4' }
+      ],
+      colors: {
+        'editor.background': '#1e1e1e',
+        'editor.foreground': '#d4d4d4',
+        'editorLineNumber.foreground': '#858585',
+        'editor.selectionBackground': '#264f78',
+        'editor.inactiveSelectionBackground': '#3a3d41',
+        'editorIndentGuide.background': '#404040',
+        'editorIndentGuide.activeBackground': '#707070',
+        'editorCursor.foreground': '#d4d4d4'
+      }
+    });
+
     // Add custom theme matching our Dracula colors if desired, or use default vs-dark
     monacoEditor = monaco.editor.create(wrapper, {
       value: _pendingCode || '',
       language: 'python',
-      theme: _darkTheme ? 'vs-dark' : 'vs',
+      theme: _darkTheme ? 'advanced-ide-dark' : 'vs',
       automaticLayout: true,
-      fontSize: 14,
+      fontSize: 16,
       fontFamily: '"JetBrains Mono", "Fira Code", "Consolas", monospace',
       fontLigatures: false,
       minimap: { enabled: false },
@@ -692,6 +719,7 @@ function initMonaco(){
       formatOnPaste: true,
       suggestOnTriggerCharacters: true,
       scrollBeyondLastLine: false,
+      bracketPairColorization: { enabled: true },
       padding: { top: 16, bottom: 16 },
       scrollbar: {
         verticalScrollbarSize: 10,
@@ -744,7 +772,7 @@ function toggleTheme(){
   localStorage.setItem('sb_theme', _darkTheme ? 'dark' : 'light');
   document.body.classList.toggle('light-theme',!_darkTheme);
   if(typeof monaco !== 'undefined' && monacoEditor) {
-    monaco.editor.setTheme(_darkTheme?'vs-dark':'vs');
+    monaco.editor.setTheme(_darkTheme?'advanced-ide-dark':'vs');
   }
   document.getElementById('theme-btn').textContent=_darkTheme?'☀️':'🌙';
 }
