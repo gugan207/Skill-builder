@@ -554,6 +554,7 @@ function togglePanel(){
     app.classList.add('show-ide');
     btn.textContent='📖';
     btn.title='Show Question';
+    setTimeout(()=>{if(monacoEditor)monacoEditor.layout();},350);
   }else{
     app.classList.remove('show-ide');
     btn.textContent='📝';

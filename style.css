@@ -11,7 +11,7 @@
   --nav-h:56px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100dvh;overflow:hidden}
 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar{width:5px;height:5px}
@@ -38,7 +38,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .btn-logout:hover{background:rgba(239,68,68,.1)}
 
 /* ══ App Layout ══ */
-.app{display:flex;height:calc(100vh - var(--nav-h));margin-top:var(--nav-h);overflow:hidden}
+.app{display:flex;height:calc(100dvh - var(--nav-h));margin-top:var(--nav-h);overflow:hidden}
 
 /* ── LEFT: Problem Panel ── */
 .left-panel{width:38%;min-width:280px;display:flex;flex-direction:column;background:var(--bg2);overflow:hidden;border-right:1px solid var(--border);transition:width .3s ease,min-width .3s ease,opacity .3s ease}
@@ -141,8 +141,8 @@ body.light-theme .status-bar{background:#f8fafc}
 .results-resizer:hover::after,.results-resizer.active::after{background:#fff;opacity:.7}
 
 /* ── Results Panel ── */
-.results-panel{flex-shrink:0;overflow-y:auto;overflow-x:hidden;background:var(--bg2);height:200px;min-height:60px;max-height:80vh}
-.results-panel.floating{position:fixed;bottom:24px;right:24px;width:460px;height:360px;max-height:80vh;box-shadow:0 16px 48px rgba(0,0,0,.5),0 0 0 1px var(--border2);border-radius:12px;z-index:1000;resize:both;overflow:hidden;display:flex;flex-direction:column;background:rgba(30,41,59,.97);backdrop-filter:blur(16px)}
+.results-panel{flex-shrink:0;overflow-y:auto;overflow-x:hidden;background:var(--bg2);height:200px;min-height:60px;max-height:80dvh}
+.results-panel.floating{position:fixed;bottom:24px;right:24px;width:460px;height:360px;max-height:80dvh;box-shadow:0 16px 48px rgba(0,0,0,.5),0 0 0 1px var(--border2);border-radius:12px;z-index:1000;resize:both;overflow:hidden;display:flex;flex-direction:column;background:rgba(30,41,59,.97);backdrop-filter:blur(16px)}
 .results-panel.floating .results-header{cursor:grab}
 .results-panel.floating .results-header:active{cursor:grabbing}
 .results-panel.floating .results-body{overflow-y:auto;flex:1}
@@ -173,9 +173,9 @@ body.light-theme .status-bar{background:#f8fafc}
 
 /* ═══ RESPONSIVE — Tablet (≤900px) ═══ */
 @media(max-width:900px){
-  .app{flex-direction:column;height:auto;min-height:calc(100vh - var(--nav-h));overflow-y:auto}
+  .app{flex-direction:column;height:auto;min-height:calc(100dvh - var(--nav-h));overflow-y:auto}
   .left-panel{width:100%!important;min-width:0;max-height:none;flex-shrink:0}
-  .right-panel{width:100%;min-width:0;flex:none;min-height:60vh;overflow-y:auto}
+  .right-panel{width:100%;min-width:0;flex:none;min-height:60dvh;overflow-y:auto}
   .editor-wrapper{min-height:220px}
   .divider{display:none}
   .panel-toggle{display:flex}
@@ -189,7 +189,7 @@ body.light-theme .status-bar{background:#f8fafc}
 
 /* ═══ RESPONSIVE — Mobile (≤600px) ═══ */
 @media(max-width:600px){
-  .app{flex-direction:column;height:calc(100vh - var(--nav-h));position:relative;overflow:hidden}
+  .app{flex-direction:column;height:calc(100dvh - var(--nav-h));position:relative;overflow:hidden}
   .left-panel,.right-panel{position:absolute;top:0;left:0;right:0;bottom:0;width:100%!important;height:100%!important;transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .3s;z-index:1}
   .left-panel{transform:translateX(0);opacity:1;z-index:2}
   .right-panel{transform:translateX(100%);opacity:0;z-index:1}
@@ -209,7 +209,8 @@ body.light-theme .status-bar{background:#f8fafc}
   .ide-actions .btn-sm{flex:1;text-align:center}
   .run-hint{display:none}
   .status-bar{font-size:9px;padding:3px 12px;gap:10px}
-  .editor-wrapper{min-height:200px;font-size:12px}
+  .editor-wrapper{min-height:120px;font-size:12px}
+  .results-panel{height:120px;}
   .run-bar{padding:8px 12px}
   .results-body{padding:8px 12px}
   .result-block{font-size:11px;padding:8px 10px}
