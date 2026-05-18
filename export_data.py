@@ -10,9 +10,9 @@ SUPABASE_URL = 'https://qvdsyvqjckpbegyhzeyi.supabase.co'
 SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2ZHN5dnFqY2twYmVneWh6ZXlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NzgyOTQsImV4cCI6MjA5MjQ1NDI5NH0.J-jlxJLDvUHFWHhVH0VDOiRkfSQ6x4S1PrN5RxPCMiY'
 
 # Question counts per week (coding + MCQ)
-WEEK_CODING = {1: 5, 2: 5, 3: 5, 4: 5, 5: 4}   # 24 coding total
-WEEK_MCQ    = {1: 20, 2: 20, 3: 20, 4: 20, 5: 10}  # 90 MCQ total
-TOTAL_QUESTIONS = 114
+WEEK_CODING = {1: 5, 2: 5, 3: 5, 4: 5, 5: 4, 6: 5, 7: 5, 8: 5, 9: 5}   # 44 coding total
+WEEK_MCQ    = {1: 20, 2: 20, 3: 20, 4: 20, 5: 10, 6: 0, 7: 0, 8: 0, 9: 0}  # 90 MCQ total
+TOTAL_QUESTIONS = 134
 
 headers = {
     'apikey': SUPABASE_KEY,
@@ -45,7 +45,7 @@ def fetch_table_data(table_name):
 def main():
     print("=" * 60)
     print("MIT Skill Builder - Advanced Data Exporter v2.0")
-    print(f"Total Questions: {TOTAL_QUESTIONS} (24 Coding + 90 MCQ)")
+    print(f"Total Questions: {TOTAL_QUESTIONS} (44 Coding + 90 MCQ)")
     print("=" * 60)
     print("Fetching user profiles and progress data from the cloud...")
 
@@ -86,8 +86,8 @@ def main():
             solved_questions = solved_raw if isinstance(solved_raw, list) else []
             
         # Calculate points per week — coding and MCQ separately
-        coding_pts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
-        mcq_pts    = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
+        coding_pts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0}
+        mcq_pts    = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0}
         
         for q in solved_questions:
             q_str = str(q)
@@ -137,7 +137,15 @@ def main():
             'W4 MCQ': f"{mcq_pts[4]}/{WEEK_MCQ[4]}",
             'W5 Coding': f"{coding_pts[5]}/{WEEK_CODING[5]}",
             'W5 MCQ': f"{mcq_pts[5]}/{WEEK_MCQ[5]}",
-            'Total Coding': f"{total_coding}/24",
+            'W6 Coding': f"{coding_pts[6]}/{WEEK_CODING[6]}",
+            'W6 MCQ': f"{mcq_pts[6]}/{WEEK_MCQ[6]}",
+            'W7 Coding': f"{coding_pts[7]}/{WEEK_CODING[7]}",
+            'W7 MCQ': f"{mcq_pts[7]}/{WEEK_MCQ[7]}",
+            'W8 Coding': f"{coding_pts[8]}/{WEEK_CODING[8]}",
+            'W8 MCQ': f"{mcq_pts[8]}/{WEEK_MCQ[8]}",
+            'W9 Coding': f"{coding_pts[9]}/{WEEK_CODING[9]}",
+            'W9 MCQ': f"{mcq_pts[9]}/{WEEK_MCQ[9]}",
+            'Total Coding': f"{total_coding}/44",
             'Total MCQ': f"{total_mcq}/90",
             'Grand Total': f"{grand_total}/{TOTAL_QUESTIONS}",
             'Completion %': f"{completion}%",
@@ -166,7 +174,9 @@ def main():
         'S.No', 'Rank', 'Name', 'Email', 
         'W1 Coding', 'W1 MCQ', 'W2 Coding', 'W2 MCQ',
         'W3 Coding', 'W3 MCQ', 'W4 Coding', 'W4 MCQ',
-        'W5 Coding', 'W5 MCQ',
+        'W5 Coding', 'W5 MCQ', 'W6 Coding', 'W6 MCQ',
+        'W7 Coding', 'W7 MCQ', 'W8 Coding', 'W8 MCQ',
+        'W9 Coding', 'W9 MCQ',
         'Total Coding', 'Total MCQ', 'Grand Total', 'Completion %',
         'Joined Date', 'Last Active'
     ]
