@@ -207,7 +207,7 @@ inputFmt:"A single string.",
 outputFmt:"Line 1: \"Character Frequencies:\"\nFollowing lines: \"X: Y\" where X is the character and Y is the count.",
 hint:"Use a dictionary to store counts or use string.count(). Iterate through characters. (File I/O might be simulated in this environment, but print the output as expected).",
 tests:[{input:"aaabbbccc",expected:"Character Frequencies:\na: 3\nb: 3\nc: 3"},{input:"Data analyst job is challenging and fun",expected:"Character Frequencies:\nD: 1\na: 6\nt: 2\n : 6\nn: 5\nl: 3\ny: 1\ns: 2\nj: 1\no: 1\nb: 1\ni: 2\nc: 1\nh: 1\ne: 1\ng: 2\nd: 1\nf: 1\nu: 1"},{input:"\"~~~~!!!@@@@##$$$$%%%%&&&",expected:"Character Frequencies:\n\": 1\n~: 4\n!: 3\n@: 4\n#: 2\n$: 4\n%: 4\n&: 3"}],
-solution:`user_input = input()\nprint("Character Frequencies:")\nd = {}\nfor key in user_input:\n    if key not in d and key != ' ':\n        d[key] = user_input.count(key)\nfor k, v in d.items():\n    print(f"{k}: {v}")`},
+solution:`user_input = input()\nprint("Character Frequencies:")\nd = {}\nfor key in user_input:\n    if key not in d:\n        d[key] = user_input.count(key)\nfor k, v in d.items():\n    print(f"{k}: {v}")`},
 
 {week:7,num:2,title:"Whitespace Remover",desc:"Maria is working on a utility called \"Whitespace Remover\". Accept a string input, save it to a file named 'file.txt', read the content from 'file.txt', and display the string without any extra white spaces. Save the modified string back to 'file.txt'.",
 inputFmt:"A single string containing alphabetic characters, spaces, and extra white spaces.",

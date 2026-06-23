@@ -1,1 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Environment
+.env
+.env.local
+.env.*.local
+venv/
+.venv/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Exports
 *.csv
+
+# Working / extraction files
+pdf_clean.txt
+pdf_extract.txt
+
+# Node (if ever used)
+node_modules/
+package-lock.json
+
+# Logs
+*.log

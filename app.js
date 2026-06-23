@@ -356,13 +356,43 @@ async function runTests(){
       out.innerHTML='<div class="result-block result-fail">⚠ No code written yet. Write your Python code and try again.</div>';
       document.getElementById('results-count').textContent='0/'+total;
       document.getElementById('results-count').style.color='var(--red)';
-      // NOTE: use return inside finally-guarded block — must reset button
+      isRunning=false;
+      if(runBtn){runBtn.disabled=false;runBtn.textContent='▶ Run Tests';}
+      return;
+    }
+
+    // Detect unsupported modules (e.g. pandas in Week 9)
+    const unsupportedModules=['pandas','numpy','matplotlib','scipy','sklearn'];
+    const importPattern=/^\s*(?:import|from)\s+(\w+)/gm;
+    let importMatch;
+    const detectedUnsupported=[];
+    while((importMatch=importPattern.exec(code))!==null){
+      if(unsupportedModules.includes(importMatch[1])){
+        detectedUnsupported.push(importMatch[1]);
+      }
+    }
+    if(detectedUnsupported.length){
+      out.innerHTML=`<div class="result-block result-fail" style="border-left-color:var(--orange)">` +
+        `⚠️ <strong>Unsupported Module${detectedUnsupported.length>1?'s':''}</strong>\n\n` +
+        `Your code uses <strong>${detectedUnsupported.join(', ')}</strong> which cannot run in the browser-based Python interpreter (Skulpt).\n\n` +
+        `These questions are designed for <strong>offline practice</strong>. You can:\n` +
+        `• Run this code locally with Python 3.10+\n` +
+        `• Use Google Colab or Jupyter Notebook\n` +
+        `• Use the "Load Solution" button to view the reference answer\n\n` +
+        `💡 The Skulpt interpreter supports core Python but not external libraries like pandas, numpy, etc.</div>`;
+      document.getElementById('results-count').textContent='⚠';
+      document.getElementById('results-count').style.color='var(--orange)';
       isRunning=false;
       if(runBtn){runBtn.disabled=false;runBtn.textContent='▶ Run Tests';}
       return;
     }
 
     out.innerHTML='';
+
+    // Collect results into two categories: errors and test results
+    const errorDiagnostics=[];  // runtime/syntax errors
+    const testCaseResults=[];   // pass/fail results
+
     for(let i=0;i<currentQ.tests.length;i++){
       const t=currentQ.tests[i];
       let got='';
@@ -373,17 +403,13 @@ async function runTests(){
         got='';
         const errMsg=e.toString();
 
-        const div=document.createElement('div');
-        div.className='result-block result-fail';
-        let text=`✗ Test ${i+1}: ERROR`;
+        let text=`🐛 Test ${i+1}: Runtime Error`;
         if(t.input) text+=`\nInput:    ${t.input.replace(/\n/g, ' | ')}`;
-        text+=`\n\n🐛 Python Error:\n${errMsg}`;
+        text+=`\n\n${errMsg}`;
 
         // Parse common Python errors and give hints
-        if(errMsg.includes('TimeLimitError')||errMsg.includes('time limit')||errMsg.includes('Program exceeded')){
+        if(errMsg.includes('TimeLimitError')||errMsg.includes('time limit')){
           text+=`\n\n💡 Fix: Your code took too long (>5s). Check for infinite loops — make sure while/for loops have a proper exit condition.`;
-        }else if(errMsg.includes('Skulpt library failed')){
-          text+=`\n\n💡 Fix: Skulpt could not be loaded. Check your internet connection and refresh the page.`;
         }else if(errMsg.includes('SyntaxError')){
           text+=`\n\n💡 Fix: Check for missing quotes, parentheses, colons, or indentation errors.`;
         }else if(errMsg.includes('NameError')){
@@ -401,39 +427,69 @@ async function runTests(){
           text+=`\n\n💡 Fix: List/string index out of range. Check your loop bounds.`;
         }else if(errMsg.includes('KeyError')){
           text+=`\n\n💡 Fix: Dictionary key not found. Check the key exists before accessing it.`;
+        }else if(errMsg.includes('ImportError')||errMsg.includes('No module named')){
+          text+=`\n\n💡 Fix: This module is not available in the browser Python interpreter. Try running locally.`;
         }
-        div.textContent=text;
-        out.appendChild(div);
+        errorDiagnostics.push({testNum:i+1,text});
         continue;
       }
 
       const pass=got.trim()===t.expected.trim();
       if(pass)passed++;
 
-      const div=document.createElement('div');
-      div.className='result-block '+(pass?'result-pass':'result-fail');
-
       if(pass){
-        div.textContent=`✓ Test ${i+1}: PASSED`;
-        if(t.input) div.textContent+=`\nInput:    ${t.input.replace(/\n/g, ' | ')}`;
-        div.textContent+=`\nOutput:   ${got}`;
+        let text=`✓ Test ${i+1}: PASSED`;
+        if(t.input) text+=`\nInput:    ${t.input.replace(/\n/g, ' | ')}`;
+        text+=`\nOutput:   ${got}`;
+        testCaseResults.push({pass:true,text});
       }else{
         let text=`✗ Test ${i+1}: FAILED`;
         if(t.input) text+=`\nInput:    ${t.input.replace(/\n/g, ' | ')}`;
         text+=`\nGot:      ${got}`;
         text+=`\nExpected: ${t.expected}`;
-        div.textContent=text;
-
-        // Add detailed error analysis
         const errors=analyzeError(got,t.expected,t.input);
-        if(errors.length){
+        testCaseResults.push({pass:false,text,errors});
+      }
+    }
+
+    // ── Render Section 1: Error Diagnostics ──
+    if(errorDiagnostics.length){
+      const section=document.createElement('div');
+      section.className='results-section';
+      const header=document.createElement('div');
+      header.className='results-section-header results-section-errors';
+      header.textContent=`🐛 Error Diagnostics (${errorDiagnostics.length})`;
+      section.appendChild(header);
+      errorDiagnostics.forEach(err=>{
+        const div=document.createElement('div');
+        div.className='result-block result-fail';
+        div.textContent=err.text;
+        section.appendChild(div);
+      });
+      out.appendChild(section);
+    }
+
+    // ── Render Section 2: Test Case Results ──
+    if(testCaseResults.length){
+      const section=document.createElement('div');
+      section.className='results-section';
+      const header=document.createElement('div');
+      header.className='results-section-header results-section-tests';
+      header.textContent=`📋 Test Case Results (${testCaseResults.filter(r=>r.pass).length}/${testCaseResults.length} passed)`;
+      section.appendChild(header);
+      testCaseResults.forEach(r=>{
+        const div=document.createElement('div');
+        div.className='result-block '+(r.pass?'result-pass':'result-fail');
+        div.textContent=r.text;
+        if(!r.pass&&r.errors&&r.errors.length){
           const errDiv=document.createElement('div');
           errDiv.className='error-detail';
-          errDiv.textContent=errors.join('\n\n');
+          errDiv.textContent=r.errors.join('\n\n');
           div.appendChild(errDiv);
         }
-      }
-      out.appendChild(div);
+        section.appendChild(div);
+      });
+      out.appendChild(section);
     }
 
     // Summary
@@ -442,7 +498,12 @@ async function runTests(){
     if(passed===total){
       summary.textContent=`🎉 All ${total} test(s) passed!`;
     }else{
-      summary.textContent=`❌ ${passed}/${total} passed — check errors above for details`;
+      const errCount=errorDiagnostics.length;
+      const failCount=testCaseResults.filter(r=>!r.pass).length;
+      let msg=`❌ ${passed}/${total} passed`;
+      if(errCount) msg+=` · ${errCount} error${errCount>1?'s':''}`;
+      if(failCount) msg+=` · ${failCount} failed`;
+      summary.textContent=msg;
     }
     out.appendChild(summary);
 
@@ -991,6 +1052,7 @@ function showMCQFinalResult(){
             <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="8"/>
             <circle cx="60" cy="60" r="52" fill="none" stroke="${isPerfect?'#22c55e':isGood?'#3b82f6':'#ef4444'}" stroke-width="8" stroke-linecap="round"
               stroke-dasharray="${Math.round(326.7*(pct/100))} 326.7"
+              style="--final-dash:${Math.round(326.7*(pct/100))}"
               transform="rotate(-90 60 60)"
               class="mcq-score-circle"/>
           </svg>

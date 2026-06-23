@@ -9,7 +9,7 @@ Your app is in `c:\Users\gugan\Downloads\skill builder\` and consists of the fol
 | `index.html` / `login.html` | Entry points and authentication |
 | `mit_skill_builder_practice.html` | Main practice IDE page |
 | `style.css` / `login.css` | Dark theme and layout styling |
-| `questions.js` | All 24 questions, tests & solutions |
+| `questions.js` | All 44 coding + 90 MCQ questions, tests & solutions |
 | `app.js` / `app-sync.js` / `auth.js` | Code editor, UI logic, Cloud Sync, and Auth |
 | `supabase_setup.sql` | Database setup instructions |
 | `export_data.py` | 👑 Admin Tool: Export all student points to CSV/Excel |
@@ -76,11 +76,12 @@ Since the app connects directly to Supabase, you can host it anywhere for free!
 |---------|-------------|
 | ☁️ Cloud Auth | Secure Login & Sign Up powered by Supabase |
 | ⚡ Real Python Execution | Code actually runs via Skulpt (Python in browser) |
-| 📝 24 Questions | Across 5 weeks of MIT Skill Builder |
+| 📝 134 Questions | 44 coding + 90 MCQ across 9 weeks |
 | 🎯 Auto Test Cases | Click Run Tests to validate code |
-| 🐛 Error Details | Shows exact line, character, and fix hints |
+| 🐛 Error Diagnostics | Separate error analysis + test case results sections |
 | 💾 Cloud Sync | Code & progress automatically backs up to the cloud! |
 | 📊 Progress Tracking | Tracks solved questions and saves code |
+| ⚠️ Week 9 (Pandas) | Marked as offline-only — runs in Python 3.10+ locally |
 | 🔀 Resizable Panels | Drag divider between question & IDE |
 
 > [!TIP]
