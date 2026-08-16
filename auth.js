@@ -3,6 +3,10 @@
 //  ⚠️  Replace these with YOUR Supabase project credentials!
 //  Get them from: https://supabase.com → Your Project → Settings → API
 // ══════════════════════════════════════════════════════════════
+// ⚠️  WARNING: For production use, these credentials should be moved to a secure server
+// ⚠️  Do NOT use these credentials in production - they are for demo purposes only
+// ⚠️  Create your own Supabase project at: https://supabase.com → Your Project → Settings → API
+
 const SUPABASE_URL = 'https://qvdsyvqjckpbegyhzeyi.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2ZHN5dnFqY2twYmVneWh6ZXlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NzgyOTQsImV4cCI6MjA5MjQ1NDI5NH0.J-jlxJLDvUHFWHhVH0VDOiRkfSQ6x4S1PrN5RxPCMiY';
 
@@ -114,7 +118,7 @@ async function handleLogin(e) {
 
     showMessage('Welcome back! Redirecting...', 'success');
     setLoading('login-btn', false);
-    setTimeout(() => { window.location.href = 'mit_skill_builder_practice.html'; }, 800);
+    setTimeout(() => { window.location.href = 'index.html'; }, 800);
   } catch (err) {
     showMessage('Something went wrong. Please try again.', 'error');
     setLoading('login-btn', false);
@@ -172,7 +176,7 @@ async function handleSignup(e) {
       await createUserProfile(data.user.id, name, email);
 
       showMessage('Account created! Redirecting...', 'success');
-      setTimeout(() => { window.location.href = 'mit_skill_builder_practice.html'; }, 800);
+      setTimeout(() => { window.location.href = 'index.html'; }, 800);
     } else {
       showMessage('Check your email to confirm your account, then sign in.', 'info');
       setLoading('signup-btn', false);
@@ -246,10 +250,10 @@ async function syncProgressFromCloud(userId) {
 function initAuth() {
   initSupabase();
 
-  // If user is already logged in, redirect
+  // If user is already logged in, redirect to course dashboard
   const user = localStorage.getItem('sb_user');
   if (user) {
-    window.location.href = 'mit_skill_builder_practice.html';
+    window.location.href = 'index.html';
     return;
   }
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="MIT Skill Builder - Interactive Python practice for exam preparation. 24 coding questions and 90 MCQ questions across 5 weeks.">
+  <meta name="description" content="MIT Skill Builder - Interactive Python practice for exam preparation. 44 coding questions and 90 MCQ questions across 9 weeks.">
   <title>MIT Skill Builder</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="style.css">
@@ -15,11 +15,11 @@
   <!-- ══ Top Navigation Bar ══ -->
   <nav class="top-nav" id="top-nav">
     <div class="nav-left">
-      <button class="nav-toggle" id="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">
+      <button class="nav-toggle" id="sidebar-toggle" onclick="toggleNavDrawer()" title="Open navigation menu">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
       <div class="nav-brand">
-        <span class="nav-logo">⚡</span>
+        <svg class="nav-logo" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
         <span class="nav-title">MIT Skill Builder</span>
       </div>
     </div>
@@ -29,9 +29,7 @@
         <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
       </div>
     </div>
-    <div class="nav-right" id="user-bar" style="display:none">
-      <span class="user-greeting" id="user-greeting">👋 Hello</span>
-      <button class="btn-logout" id="btn-logout" onclick="handleLogout()">Sign Out</button>
+    <div class="nav-right">
     </div>
   </nav>
 
@@ -40,6 +38,10 @@
 
     <!-- LEFT: Problem Panel (40%) -->
     <div class="left-panel">
+      <div class="q-panel-header">
+        <span class="q-panel-title"><svg style="display:inline;vertical-align:text-bottom;margin-right:6px;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Questions</span>
+        <button class="q-panel-collapse" onclick="toggleQuestionPanel()" title="Collapse question panel">«</button>
+      </div>
       <div class="q-selector" id="week-tabs"></div>
       <div class="q-tabs" id="q-tabs"></div>
       <div class="q-content" id="q-content">
@@ -59,15 +61,16 @@
     <div class="right-panel">
       <div class="ide-header">
         <div class="ide-header-left">
-          <span class="ide-lang-badge">🐍 Python 3.10</span>
+          <button class="q-panel-collapse" id="panel-expand-btn" onclick="toggleQuestionPanel()" title="Expand question panel" style="display:none; margin-right: 8px;">»</button>
+          <span class="ide-lang-badge"><svg style="display:inline;vertical-align:text-bottom;margin-right:4px;" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 0-10 10v4a2 2 0 0 0 2 2h3a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2H5a7 7 0 1 1 14 0h-2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h3a2 2 0 0 0 2-2v-4a10 10 0 0 0-10-10Z"/></svg>Python 3.10</span>
           <span class="ide-autosave" id="autosave-indicator">● Auto-saved</span>
         </div>
         <div class="ide-actions">
-          <button class="btn btn-sm btn-ghost" onclick="toggleHint()" title="Show hint">💡 Hint</button>
-          <button class="btn btn-sm btn-ghost" onclick="toggleSolution()" title="View answer">👁 Answer</button>
-          <button class="btn btn-sm btn-ghost" onclick="loadSolution()" title="Load solution into editor">📋 Load</button>
-          <button class="btn btn-sm btn-ghost" onclick="clearCode()" title="Clear editor">🗑 Clear</button>
-          <button class="btn btn-sm btn-theme" onclick="toggleTheme()" id="theme-btn" title="Toggle theme">☀️</button>
+          <button class="btn btn-sm btn-ghost" onclick="toggleHint()" title="Show hint"><svg style="display:inline;vertical-align:text-bottom;margin-right:4px;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.2 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>Hint</button>
+          <button class="btn btn-sm btn-ghost" onclick="toggleSolution()" title="View answer"><svg style="display:inline;vertical-align:text-bottom;margin-right:4px;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>Answer</button>
+          <button class="btn btn-sm btn-ghost" onclick="loadSolution()" title="Load solution into editor"><svg style="display:inline;vertical-align:text-bottom;margin-right:4px;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Load</button>
+          <button class="btn btn-sm btn-ghost" onclick="clearCode()" title="Clear editor"><svg style="display:inline;vertical-align:text-bottom;margin-right:4px;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>Clear</button>
+          <button class="btn btn-sm btn-theme" onclick="toggleTheme()" id="theme-btn" title="Toggle theme"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M5 5l1.5 1.5"/><path d="M17.5 17.5L19 19"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M5 19l1.5-1.5"/><path d="M17.5 6.5L19 5"/></svg></button>
         </div>
       </div>
       <div class="hint-box" id="hint-box" style="display:none"></div>
@@ -86,7 +89,7 @@
       <div class="results-resizer" id="results-resizer"></div>
       <div class="results-panel" id="results-panel">
         <div class="results-header" id="results-header">
-          <span>📊 Test Results</span>
+          <span><svg style="display:inline;vertical-align:text-bottom;margin-right:6px;" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>Test Results</span>
           <div class="results-actions">
             <span id="results-count"></span>
             <button class="btn-icon" id="toggle-float-btn" onclick="toggleFloatResults()" title="Float/Dock Panel">
@@ -102,7 +105,7 @@
       <!-- MCQ Answer Panel (shown only for MCQ questions) -->
       <div class="mcq-answer-panel" id="mcq-answer-panel" style="display:none">
         <div class="mcq-panel-header">
-          <span class="mcq-panel-badge">📝 One Mark Question</span>
+          <span class="mcq-panel-badge"><svg style="display:inline;vertical-align:text-bottom;margin-right:4px;" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>One Mark Question</span>
           <span class="mcq-panel-hint">Select the correct answer</span>
         </div>
         <div class="mcq-progress-bar-wrap"><div class="mcq-progress-bar" id="mcq-progress-bar"></div></div>
@@ -119,7 +122,46 @@
   </div>
 
   <!-- Mobile Panel Toggle -->
-  <button class="panel-toggle" id="panel-toggle" onclick="togglePanel()" title="Switch panel">📝</button>
+  <button class="panel-toggle" id="panel-toggle" onclick="togglePanel()" title="Switch panel"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+
+  <!-- Navigation Drawer -->
+  <div class="nav-drawer-overlay" id="nav-drawer-overlay" onclick="closeNavDrawer()"></div>
+  <nav class="nav-drawer" id="nav-drawer">
+    <div class="drawer-header">
+      <div class="drawer-user-avatar" id="drawer-user-avatar">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="drawer-user-info">
+        <div class="drawer-user-name" id="drawer-user-name">User</div>
+        <div class="drawer-user-email" id="drawer-user-email">user@example.com</div>
+      </div>
+    </div>
+    
+    <div class="drawer-section">
+      <div class="drawer-section-title">My Courses</div>
+      <a href="index.html" class="drawer-link">
+        <span class="drawer-link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span>
+        <span>Dashboard</span>
+      </a>
+      <a href="mit_skill_builder_practice.html" class="drawer-link active">
+        <span class="drawer-link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></span>
+        <span>Python Fundamentals</span>
+      </a>
+      <a href="dsa.html" class="drawer-link">
+        <span class="drawer-link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg></span>
+        <span>Data Structures & Algorithms</span>
+        <span class="drawer-badge">Soon</span>
+      </a>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-section-title">Account</div>
+      <button class="drawer-link drawer-btn" onclick="handleLogout()">
+        <span class="drawer-link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>
+        <span>Sign Out</span>
+      </button>
+    </div>
+  </nav>
 
   <!-- Auth guard -->
   <script>

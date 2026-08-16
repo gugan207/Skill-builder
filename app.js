@@ -683,16 +683,57 @@ function initResultsResizer(){
   document.addEventListener('touchend',stopResize);
 }
 
-// ── Collapsible Sidebar ──
+// ── Collapsible Question Panel ──
 let sidebarCollapsed=false;
-function toggleSidebar(){
+function toggleQuestionPanel(){
   const left=document.querySelector('.left-panel');
   const divider=document.getElementById('divider');
+  const expandBtn=document.getElementById('panel-expand-btn');
   sidebarCollapsed=!sidebarCollapsed;
   left.classList.toggle('collapsed',sidebarCollapsed);
   if(divider)divider.style.display=sidebarCollapsed?'none':'';
+  if(expandBtn)expandBtn.style.display=sidebarCollapsed?'flex':'none';
   setTimeout(()=>{if(monacoEditor)monacoEditor.layout();},350);
 }
+
+// ── Navigation Drawer ──
+function toggleNavDrawer(){
+  const drawer=document.getElementById('nav-drawer');
+  const overlay=document.getElementById('nav-drawer-overlay');
+  const isOpen=drawer.classList.contains('open');
+  drawer.classList.toggle('open',!isOpen);
+  overlay.classList.toggle('open',!isOpen);
+}
+function openNavDrawer(){
+  const drawer=document.getElementById('nav-drawer');
+  const overlay=document.getElementById('nav-drawer-overlay');
+  if(!drawer)return;
+  drawer.classList.add('open');
+  overlay.classList.add('open');
+}
+function closeNavDrawer(){
+  const drawer=document.getElementById('nav-drawer');
+  const overlay=document.getElementById('nav-drawer-overlay');
+  if(!drawer)return;
+  drawer.classList.remove('open');
+  overlay.classList.remove('open');
+}
+// Close drawer with Escape key
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')closeNavDrawer();
+});
+// Populate drawer with current user's profile
+(function initNavDrawer(){
+  const userJson=localStorage.getItem('sb_user');
+  if(!userJson)return;
+  try{
+    const user=JSON.parse(userJson);
+    const nameEl=document.getElementById('drawer-user-name');
+    const emailEl=document.getElementById('drawer-user-email');
+    if(nameEl)nameEl.textContent=user.name||'User';
+    if(emailEl)emailEl.textContent=user.email||'';
+  }catch(e){}
+})();
 
 // ── Floating Results Panel ──
 let isFloating=false;
