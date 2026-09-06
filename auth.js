@@ -101,7 +101,11 @@ async function handleLogin(e) {
     const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
 
     if (error) {
-      showMessage(error.message, 'error');
+      if (error.message === 'Failed to fetch' || error.message.includes('NetworkError') || error.message.includes('fetch')) {
+        showMessage('⚠️ Cannot reach the server — the backend may be temporarily sleeping. Please try again in 1-2 minutes, or contact the admin.', 'error');
+      } else {
+        showMessage(error.message, 'error');
+      }
       setLoading('login-btn', false);
       return;
     }
@@ -120,7 +124,12 @@ async function handleLogin(e) {
     setLoading('login-btn', false);
     setTimeout(() => { window.location.href = 'index.html'; }, 800);
   } catch (err) {
-    showMessage('Something went wrong. Please try again.', 'error');
+    const msg = (err && err.message) || '';
+    if (msg === 'Failed to fetch' || msg.includes('NetworkError') || msg.includes('fetch')) {
+      showMessage('⚠️ Cannot reach the server — the backend may be temporarily sleeping. Please try again in 1-2 minutes, or contact the admin.', 'error');
+    } else {
+      showMessage('Something went wrong. Please try again.', 'error');
+    }
     setLoading('login-btn', false);
   }
 }
@@ -152,7 +161,11 @@ async function handleSignup(e) {
     });
 
     if (error) {
-      showMessage(error.message, 'error');
+      if (error.message === 'Failed to fetch' || error.message.includes('NetworkError') || error.message.includes('fetch')) {
+        showMessage('⚠️ Cannot reach the server — the backend may be temporarily sleeping. Please try again in 1-2 minutes, or contact the admin.', 'error');
+      } else {
+        showMessage(error.message, 'error');
+      }
       setLoading('signup-btn', false);
       return;
     }
@@ -183,7 +196,12 @@ async function handleSignup(e) {
       switchTab('login');
     }
   } catch (err) {
-    showMessage('Something went wrong. Please try again.', 'error');
+    const msg = (err && err.message) || '';
+    if (msg === 'Failed to fetch' || msg.includes('NetworkError') || msg.includes('fetch')) {
+      showMessage('⚠️ Cannot reach the server — the backend may be temporarily sleeping. Please try again in 1-2 minutes, or contact the admin.', 'error');
+    } else {
+      showMessage('Something went wrong. Please try again.', 'error');
+    }
     setLoading('signup-btn', false);
   }
 }
