@@ -5,8 +5,8 @@
 
 // ⚠️  WARNING: For production use, these credentials should be moved server-side
 // ⚠️  This anon key is visible to users but with RLS it's safe for demo use only
-const SYNC_SUPABASE_URL = 'https://qvdsyvqjckpbegyhzeyi.supabase.co';
-const SYNC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2ZHN5dnFqY2twYmVneWh6ZXlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NzgyOTQsImV4cCI6MjA5MjQ1NDI5NH0.J-jlxJLDvUHFWHhVH0VDOiRkfSQ6x4S1PrN5RxPCMiY';
+const SYNC_SUPABASE_URL = 'https://ygfcmcldroxjmlpiqhsj.supabase.co';
+const SYNC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnZmNtY2xkcm94am1scGlxaHNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg3MDkwNzMsImV4cCI6MjEwNDI4NTA3M30.AcEY0aX-7AbqwT_Ham7XZDnXZx8Z8GAU9PVdnIggwqw';
 
 let syncClient = null;
 let currentUser = null;

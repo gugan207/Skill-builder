@@ -7,8 +7,8 @@
 // ⚠️  Do NOT use these credentials in production - they are for demo purposes only
 // ⚠️  Create your own Supabase project at: https://supabase.com → Your Project → Settings → API
 
-const SUPABASE_URL = 'https://qvdsyvqjckpbegyhzeyi.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2ZHN5dnFqY2twYmVneWh6ZXlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NzgyOTQsImV4cCI6MjA5MjQ1NDI5NH0.J-jlxJLDvUHFWHhVH0VDOiRkfSQ6x4S1PrN5RxPCMiY';
+const SUPABASE_URL = 'https://ygfcmcldroxjmlpiqhsj.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnZmNtY2xkcm94am1scGlxaHNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg3MDkwNzMsImV4cCI6MjEwNDI4NTA3M30.AcEY0aX-7AbqwT_Ham7XZDnXZx8Z8GAU9PVdnIggwqw';
 
 let sbClient = null;
 

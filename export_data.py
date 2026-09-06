@@ -5,9 +5,9 @@ import csv
 import sys
 from datetime import datetime
 
-# Supabase Configuration
-SUPABASE_URL = 'https://qvdsyvqjckpbegyhzeyi.supabase.co'
-SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2ZHN5dnFqY2twYmVneWh6ZXlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NzgyOTQsImV4cCI6MjA5MjQ1NDI5NH0.J-jlxJLDvUHFWHhVH0VDOiRkfSQ6x4S1PrN5RxPCMiY'
+# Supabase Configuration (Admin tool: uses service_role key to bypass RLS and export all rows)
+SUPABASE_URL = 'https://ygfcmcldroxjmlpiqhsj.supabase.co'
+SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlnZmNtY2xkcm94am1scGlxaHNqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4ODcwOTA3MywiZXhwIjoyMTA0Mjg1MDczfQ.RCT0YWo-lNvqSo0c0chFqTo7ViIu9RU2qeKYMgCvMws'
 
 # Question counts per week (coding + MCQ)
 WEEK_CODING = {1: 5, 2: 5, 3: 5, 4: 5, 5: 4, 6: 5, 7: 5, 8: 5, 9: 5}   # 44 coding total
